@@ -6,7 +6,6 @@ public class Carro {
     private int ano;
     private String cor;
 
-    // Construtor
     public Carro(String marca, String modelo, int ano, String cor) {
         this.marca = marca;
         this.modelo = modelo;
@@ -14,7 +13,6 @@ public class Carro {
         this.cor = cor;
     }
 
-    // Métodos
     public void ligar() {
         System.out.println("O carro foi ligado.");
     }
@@ -30,7 +28,6 @@ public class Carro {
         System.out.println("Cor: " + cor);
     }
 
-    // Método principal para testar a classe
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Digite a marca do carro: ");
