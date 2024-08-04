@@ -1,44 +1,83 @@
-#include<stdio.h>
-#include<stdbool.h>
+#include <stdio.h>
 
-bool conferir(int vet[])
-{
-    int x;
-    bool resp = false;
-    printf("Digite um numero: ");
-    scanf("%d",&x);
-    for(int i=0; i<5; i++){
-        if(x == vet[i]){
-            resp = true;
-            break;
+void encontrarMaiorEMenor(int array[], int tamanho) {
+    if (tamanho <= 0) {
+        printf("Array vazio!\n");
+        return;
+    }
+
+    int maior, menor;
+
+    // Inicialização com o primeiro elemento
+    if (tamanho % 2 == 0) {
+        // Se o tamanho é par, comparamos o primeiro par de elementos
+        if (array[0] > array[1]) {
+            maior = array[0];
+            menor = array[1];
+        } else {
+            maior = array[1];
+            menor = array[0];
+        }
+    } else {
+        // Se o tamanho é ímpar, inicializamos com o primeiro elemento
+        maior = menor = array[0];
+    }
+
+    // Começar a partir do segundo par
+    int i;
+    if (tamanho % 2 == 0) {
+        i = 2;
+    } else {
+        i = 1;
+    }
+    
+    // Verificar limites para evitar acesso inválido
+    for (; i + 1 < tamanho; i += 2) {
+        int a = array[i];
+        int b = array[i + 1];
+
+        int localMaior;
+        int localMenor;
+
+        if (a > b) {
+            localMaior = a;
+            localMenor = b;
+        } else {
+            localMaior = b;
+            localMenor = a;
+        }
+
+        // Atualizar maior
+        if (localMaior > maior) {
+            maior = localMaior;
+        }
+        
+        // Atualizar menor
+        if (localMenor < menor) {
+            menor = localMenor;
         }
     }
-    return resp;
+
+    // Verificar o último elemento em caso de tamanho ímpar
+    if (tamanho % 2 != 0) {
+        int ultimoElemento = array[tamanho - 1];
+        if (ultimoElemento > maior) {
+            maior = ultimoElemento;
+        }
+        if (ultimoElemento < menor) {
+            menor = ultimoElemento;
+        }
+    }
+
+    printf("Maior elemento: %d\n", maior);
+    printf("Menor elemento: %d\n", menor);
 }
 
-int main()
-{
-    int vet[5];
-    for(int i=0; i<5; i++){
-        printf("Digite um valor: ");
-        scanf("%d",&vet[i]);
-    }
+int main() {
+    int array[] = {3, 5, 1, 8, 2};
+    int tamanho = sizeof(array) / sizeof(array[0]);
 
-    int temp;
-    for(int i=0; i<5-1; i++){
-        for(int j=0;j<5-i-1;j++){
-            if(vet[j] > vet[j+1]){
-                temp = vet[j+1];
-                vet[j+1] = vet[j];
-                vet[j] = temp;
-            }
-        }
-    }
+    encontrarMaiorEMenor(array, tamanho);
 
-    bool resposta = conferir(vet);
-    if(resposta){
-        printf("Existe um numero igual no vetor");
-    } else {
-        printf("Nao existe um numero igual no vetor");
-    }
+    return 0;
 }
