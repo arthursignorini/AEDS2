@@ -1,7 +1,6 @@
 package unidade1.conceitos_basicos;
 
 import java.util.Scanner;
-import java.util.Arrays;
 
 public class PesquisaBinaria {
 
