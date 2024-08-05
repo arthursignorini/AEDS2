@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-// Esse codigo verifica se o caracter do char C é uma vogal, sendo ela maiscula ou minuscula
+// Esse codigo verifica se o caracter do char C ï¿½ uma vogal, sendo ela maiscula ou minuscula
 
 bool doidao (char c) {
     bool resp = false;
