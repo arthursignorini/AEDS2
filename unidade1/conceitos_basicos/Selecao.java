@@ -23,7 +23,6 @@ public class Selecao {
             System.out.println(vet[i]);
         }
 
-        
         scanner.close();
     }
 
