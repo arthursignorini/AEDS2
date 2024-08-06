@@ -10,6 +10,7 @@ public class AquecimentoRecursivo {
         String string = scanner.nextLine();
         int num = contar(string, 0);
         System.out.println("Número de caracteres maiúsculos: " + num);
+        scanner.close();
     }
 
     public static int contar(String string, int i) {
@@ -22,5 +23,6 @@ public class AquecimentoRecursivo {
                 return contar(string, i + 1);
             }
         }
+        
     }
 }
