@@ -43,5 +43,6 @@ public class Carro {
         meuCarro.exibirInformacoes();
         meuCarro.ligar();
         meuCarro.desligar();
+        scanner.close();
     }
 }
