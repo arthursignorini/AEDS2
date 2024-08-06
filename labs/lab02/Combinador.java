@@ -34,5 +34,6 @@ public class Combinador {
                 System.out.print(string1.charAt(i));
             } 
         }
+        scanner.close();
     }
 }

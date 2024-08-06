@@ -11,6 +11,7 @@ public class AquecimentoInterativo {
         String string = scanner.nextLine();
         int num = contar(string);
         System.out.println("Número de caracteres maiúsculos: " + num);
+        scanner.close();
     }
 
     public static int contar(String string) {
