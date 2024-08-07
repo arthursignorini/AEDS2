@@ -1,3 +1,4 @@
+package unidade1.conceitos_basicos;
 public class QuickSort {
 
     private static void quicksort(int[] array, int esq, int dir) {
