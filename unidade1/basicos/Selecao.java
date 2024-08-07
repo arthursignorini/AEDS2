@@ -1,4 +1,4 @@
-package unidade1.conceitos_basicos;
+package unidade1.basicos;
 
 import java.util.Scanner;
 

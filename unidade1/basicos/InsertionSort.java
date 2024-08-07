@@ -1,4 +1,4 @@
-package unidade1.conceitos_basicos;
+package unidade1.basicos;
 
 public class InsertionSort {
     public static void insertionSort(int[] array) {
