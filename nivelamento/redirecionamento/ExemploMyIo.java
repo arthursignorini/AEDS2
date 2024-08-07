@@ -1,7 +1,7 @@
 package nivelamento.redirecionamento;
 
 
-import classes.MyIO;
+import classe.MyIO;
 
 class ExemploMyIO {
     public static void main(String[] args) {
