@@ -2,7 +2,7 @@ package tps.tp1;
 
 import java.util.Scanner;
 
-public class Q03 {
+public class CiframentoCesar {
     public static String criptografar(String palavra) {
         if (palavra.isEmpty()) {
             return "";
