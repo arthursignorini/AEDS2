@@ -1,28 +1,47 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
 
+int main()
+{
+    char palavra[1000];
+    while (true )
+    {
+        scanf(" %[^\n]", palavra);
 
-bool conferir(char string[]){
-    int x = strlen(string);
-    for(int i=0; i<x/2; i++){
-        if(string[i] != string[x-1-i]){
-            return false;
+        if (strcmp(palavra, "FIM") == 0)
+        {
+            break;
+        }
+
+        bool resp = true;
+        int tam = strlen(palavra);
+        int j = tam - 1;
+        for (int i = 0; i < (tam / 2); i++)
+        {
+            if (palavra[i] != palavra[j])
+            {
+                resp = false;
+                break;
+            }
+            if (j >= 0)
+            {
+                j--;
+            }
+            else
+            {
+                break;
+            }
+        }
+        if (resp == false)
+        {
+            printf("NAO\n");
+        }
+        else
+        {
+            printf("SIM\n");
         }
     }
-    return true;
-}
 
-int main(){
-    char string[50];
-    printf("Digite um string: ");
-    fgets(string, 50, stdin);
-    string[strcspn(string, "\n")] = '\0';
-    
-    if(conferir(string)){
-        printf("SIM");
-    } else {
-        printf("NAO");
-    }
-
+    return 0;
 }
