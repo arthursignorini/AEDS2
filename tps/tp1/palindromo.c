@@ -20,9 +20,9 @@ int main(){
     string[strcspn(string, "\n")] = '\0';
     
     if(conferir(string)){
-        printf("A frase eh um palindromo");
+        printf("SIM");
     } else {
-        printf("A frase nao eh um palindromo");
+        printf("NAO");
     }
 
 }
