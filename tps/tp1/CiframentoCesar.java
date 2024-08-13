@@ -2,26 +2,40 @@ package tps.tp1;
 
 import java.util.Scanner;
 
-public class CiframentoCesar {
-    public static void main(String[]args){
+public class Q03 {
+    public static String criptografar(String palavra) {
+        if (palavra.isEmpty()) {
+            return "";
+        }
 
-        Scanner scanner = new Scanner(System.in);
+        char primeiroChar = palavra.charAt(0);
+        int letra = (int) primeiroChar;
 
-        System.out.print("Digite uma string");
-        String string = scanner.nextLine();
+        letra = letra + 3;
 
-        mudar(string);
+        if (letra > 126) {
+            letra = 32 + (letra - 127);
+        }
 
-        scanner.close();
+        char charCriptografado = (char) letra;
 
+        return charCriptografado + criptografar(palavra.substring(1));
     }
 
-    public static void mudar(String string){
-        int x = string.length();
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        for(int i=0; i<x; i++){
-            char c = (char) (string.charAt(i) + 3); 
-            System.out.print(c);
+        while (true) {
+            System.out.println("Digite uma palavra para criptografar (ou 'FIM' para sair):");
+            String palavra = scanner.nextLine();
+
+            if (palavra.equals("FIM")) {
+                break;
+            } else {
+                String palavraCriptografada = criptografar(palavra);
+                System.out.println("Palavra criptografada: " + palavraCriptografada);
+            }
         }
+        scanner.close();
     }
 }
