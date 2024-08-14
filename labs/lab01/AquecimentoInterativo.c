@@ -14,20 +14,20 @@ int contar(char string[]) {
 
 int main() {
 
-    char palavra[1000];
+    char string[1000];
     while(1){
-        scanf(" %[^\n]", palavra);
+        scanf(" %[^\n]", string);
 
-        if (strcmp(palavra, "FIM") == 0) {
+        if (strcmp(string, "FIM") == 0) {
             break;
         } else {
             char string[50];
-        printf("Digite uma string: ");
-        fgets(string, 50, stdin);
-        string[strcspn(string, "\n")] = 0;
+        
+            fgets(string, 50, stdin);
+            string[strcspn(string, "\n")] = 0;
 
-        int x = contar(string);
-        printf("%d\n", x);
+            int x = contar(string);
+            printf("%d\n", x);
         }
     }
     return 0;
