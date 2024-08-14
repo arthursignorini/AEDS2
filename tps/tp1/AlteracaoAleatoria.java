@@ -3,13 +3,12 @@ package tps.tp1;
 import java.util.Random;
 import java.util.Scanner;
 
-public class alteracaoaleatoria {
+public class AlteracaoAleatoria { 
 
     public static String alteracao(String frase) {
         
-        Random gerador = new Random(); 
+        Random gerador = new Random();  
         
-       
         char letraAleatoria = frase.charAt(gerador.nextInt(frase.length())); 
         char letraAleatoria2 = (char)('a' + gerador.nextInt(26)); 
         
