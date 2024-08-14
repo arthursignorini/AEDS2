@@ -5,7 +5,7 @@
 int main()
 {
     char palavra[1000];
-    while (true )
+    while (true)
     {
         scanf(" %[^\n]", palavra);
 
@@ -13,33 +13,28 @@ int main()
         {
             break;
         }
-
-        bool resp = true;
-        int tam = strlen(palavra);
-        int j = tam - 1;
-        for (int i = 0; i < (tam / 2); i++)
+        else
         {
-            if (palavra[i] != palavra[j])
+            bool resp = true;
+            int tam = strlen(palavra);
+            
+            for (int i = 0; i < (tam / 2); i++)
             {
-                resp = false;
-                break;
+                if (palavra[i] != palavra[tam - i - 1])
+                {
+                    resp = false;
+                    break;
+                }
             }
-            if (j >= 0)
+
+            if (resp)
             {
-                j--;
+                printf("SIM\n");
             }
             else
             {
-                break;
+                printf("NAO\n");
             }
-        }
-        if (resp == false)
-        {
-            printf("NAO\n");
-        }
-        else
-        {
-            printf("SIM\n");
         }
     }
 
