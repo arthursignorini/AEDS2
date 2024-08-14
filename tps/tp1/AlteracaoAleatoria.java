@@ -3,7 +3,7 @@ package tps.tp1;
 import java.util.Random;
 import java.util.Scanner;
 
-public class AlteracaoAleatoria {
+public class alteracaoaleatoria {
 
     public static String alteracao(String frase) {
         
