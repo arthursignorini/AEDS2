@@ -3,7 +3,7 @@ package tps.tp1;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Q04 {
+public class AlteracaoAleatoria {
 
     public static String substituicaoString(String str, char caracter, char substituto){
         String newStr = new String();
