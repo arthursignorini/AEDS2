@@ -25,17 +25,12 @@ public class CiframentoCesar {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        while (true) {
-            System.out.println("Digite uma palavra para criptografar (ou 'FIM' para sair):");
-            String palavra = scanner.nextLine();
-
-            if (palavra.equals("FIM")) {
-                break;
-            } else {
-                String palavraCriptografada = criptografar(palavra);
-                System.out.println("Palavra criptografada: " + palavraCriptografada);
-            }
+        String string;
+        while(!(string = scanner.nextLine()).equals("FIM")){
+                String palavraCriptografada = criptografar(string);
+                System.out.println(palavraCriptografada);
         }
         scanner.close();
-    }
+    }     
 }
+

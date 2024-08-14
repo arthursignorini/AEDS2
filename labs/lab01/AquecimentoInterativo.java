@@ -7,10 +7,12 @@ public class AquecimentoInterativo {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Digite uma string: ");
-        String string = scanner.nextLine();
-        int num = contar(string);
-        System.out.println("Número de caracteres maiúsculos: " + num);
+        String string;
+        while(!(string = scanner.nextLine()).equals("FIM")){
+            int num = contar(string);
+            System.out.println(num);
+            
+        }
         scanner.close();
     }
 
