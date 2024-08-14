@@ -21,11 +21,6 @@ int main() {
         if (strcmp(string, "FIM") == 0) {
             break;
         } else {
-            char string[50];
-        
-            fgets(string, 50, stdin);
-            string[strcspn(string, "\n")] = 0;
-
             int x = contar(string);
             printf("%d\n", x);
         }
