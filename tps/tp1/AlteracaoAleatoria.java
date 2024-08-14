@@ -7,8 +7,10 @@ public class alteracaoaleatoria {
 
     public static String alteracao(String frase) {
         
-        Random gerador = new Random(4);  
-        char letraAleatoria = (char)('a' + gerador.nextInt(26)); 
+        Random gerador = new Random(); 
+        
+       
+        char letraAleatoria = frase.charAt(gerador.nextInt(frase.length())); 
         char letraAleatoria2 = (char)('a' + gerador.nextInt(26)); 
         
         StringBuilder novaFrase = new StringBuilder(frase);
