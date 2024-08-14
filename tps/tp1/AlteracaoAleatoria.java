@@ -35,7 +35,7 @@ public class AlteracaoAleatoria {
             newStr = substituicaoString(str, caracter, substituto);
             System.out.println(newStr);
         }
-        
+        sc.close();
     }
     
 }
