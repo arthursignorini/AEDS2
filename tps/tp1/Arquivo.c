@@ -33,11 +33,11 @@ int main() {
             double num;
             fscanf(arquivo, "%lf", &num);
 
-            // Verificar se o número é inteiro
+            // Verificar se o número é praticamente inteiro
             if (num == (int)num) {
                 printf("%d\n", (int)num);  // Imprime como inteiro
             } else {
-                printf("%.10lf\n", num);  // Imprime como double
+                printf("%g\n", num);  // Imprime como double com casas decimais significativas
             }
         }
     }
@@ -47,11 +47,11 @@ int main() {
     double num;
     fscanf(arquivo, "%lf", &num);
 
-    // Verificar se o número é inteiro
+    // Verificar se o número é praticamente inteiro
     if (num == (int)num) {
         printf("%d\n", (int)num);  // Imprime como inteiro
     } else {
-        printf("%.10lf\n", num);  // Imprime como double
+        printf("%g\n", num);  // Imprime como double com casas decimais significativas
     }
 
     fclose(arquivo);
