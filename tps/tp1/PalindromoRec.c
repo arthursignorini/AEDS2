@@ -11,6 +11,7 @@ bool palindromo(char palavra[], int i, int j) {
         return palindromo(palavra, i + 1, j - 1);
     }
 }
+
 int main() {
     char palavra[1000];
 
