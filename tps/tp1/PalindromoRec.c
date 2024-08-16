@@ -16,7 +16,7 @@ int main() {
     char palavra[1000];
 
     while (true) {
-        scanf("%s", palavra);
+        scanf(" %[^\n]", palavra);
 
         if (strcmp(palavra, "FIM") == 0) {
             break;
