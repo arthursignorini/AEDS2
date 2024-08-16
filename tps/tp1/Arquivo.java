@@ -27,7 +27,11 @@ public class Arquivo {
             for (int i = n - 1; i >= 0; i--) {
                 raf.seek(i * doubleSize);  // Posicionar o ponteiro no início do número i
                 double num = raf.readDouble();
-                System.out.println(num);
+                if(isInteiro(num)){
+                    System.out.println((int)num);
+                } else {
+                    System.out.println(num);
+                }
             }
 
             raf.close();
@@ -36,5 +40,13 @@ public class Arquivo {
         }
 
         sc.close();
+    }
+
+    public static boolean isInteiro(double num) {
+        if(num == (int)num){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
