@@ -45,19 +45,6 @@ int main() {
         }
     }
 
-    // Ler o primeiro número manualmente se ainda não tiver sido impresso
-    if (!first_number_printed) {
-        fseek(arquivo, 0, SEEK_SET);
-        double num;
-        fscanf(arquivo, "%lf", &num);
-
-        // Verificar se o número é praticamente inteiro
-        if (num == (int)num) {
-            printf("%d\n", (int)num);  // Imprime como inteiro
-        } else {
-            printf("%g\n", num);  // Imprime como double com casas decimais significativas
-        }
-    }
 
     fclose(arquivo);
     return 0;
