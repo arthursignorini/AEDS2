@@ -24,7 +24,8 @@ int main() {
     fseek(arquivo, 0, SEEK_END);
     long pos = ftell(arquivo);  // Obter a posição atual (tamanho do arquivo)
     
-    // Ler os números de trás para frente
+    // Ler os números de trás para frente, ignorando a leitura duplicada do primeiro número
+    int first_number_printed = 0;
     while (pos > 0) {
         fseek(arquivo, --pos, SEEK_SET);  // Voltar uma posição no arquivo
 
@@ -39,19 +40,23 @@ int main() {
             } else {
                 printf("%g\n", num);  // Imprime como double com casas decimais significativas
             }
+
+            first_number_printed = 1;
         }
     }
 
-    // Ler o primeiro número manualmente
-    fseek(arquivo, 0, SEEK_SET);
-    double num;
-    fscanf(arquivo, "%lf", &num);
+    // Ler o primeiro número manualmente se ainda não tiver sido impresso
+    if (!first_number_printed) {
+        fseek(arquivo, 0, SEEK_SET);
+        double num;
+        fscanf(arquivo, "%lf", &num);
 
-    // Verificar se o número é praticamente inteiro
-    if (num == (int)num) {
-        printf("%d\n", (int)num);  // Imprime como inteiro
-    } else {
-        printf("%g\n", num);  // Imprime como double com casas decimais significativas
+        // Verificar se o número é praticamente inteiro
+        if (num == (int)num) {
+            printf("%d\n", (int)num);  // Imprime como inteiro
+        } else {
+            printf("%g\n", num);  // Imprime como double com casas decimais significativas
+        }
     }
 
     fclose(arquivo);
