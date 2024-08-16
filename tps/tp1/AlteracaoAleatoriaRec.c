@@ -19,7 +19,7 @@ int main() {
     srand(time(NULL)); 
 
     while(1){
-        scanf("%s", palavra);
+        fgets(palavra,1000,stdin);
         if(strcmp(palavra,"FIM") == 0){
             break;
         } else {
