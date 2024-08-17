@@ -44,8 +44,6 @@ int main() {
             first_number_printed = 1;
         }
     }
-
-
     fclose(arquivo);
     return 0;
 }
