@@ -3,6 +3,7 @@ package collections;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Pessoa {
@@ -57,6 +58,33 @@ class Aluno  {
     }
 }
 
+class Trabalhador {
+    private int idade;
+    private String nome;
+
+    public Trabalhador (int i, String n) {
+        idade = i;
+        nome = n;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setNome(String n) {
+        nome = n;
+    }
+
+    public void setIdade(int i) {
+        idade = i;
+    }
+}
+
+
 class Main {
     public static void main(String[] args) {
         List<Pessoa> pessoas = new ArrayList<>(); // faz uma lista com vários objetos Pessoa
@@ -69,6 +97,8 @@ class Main {
              System.out.println(pessoa.getNome());
         }
         // No list voce poderia adicionar o mesmo objeto 2 vezes e assim teria duas referencias para ele, mas no Set isso não acontece
+
+
 
         Set<Aluno> alunos = new HashSet<>(); // Nesse metodo nao vai poder adicionar o mesmo objeto
         Aluno a1 = new Aluno(19, "Pedro");
@@ -84,5 +114,11 @@ class Main {
         } else {
             System.out.println("Não adicionou");
         }
+
+
+        Map<String,Trabalhador> mapa = new HashMap<>(); // muito usado para acessar indices rapidamente
+        Trabalhador t1 = new Trabalhador(45, "José");
+        mapa.put("João", t1); // adiciona um trabalhador ao mapa
+        mapa.get("João") // isso vai te retornar o objeto 
     }
 }
