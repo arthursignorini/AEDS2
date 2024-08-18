@@ -1,13 +1,41 @@
 package collections;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Pessoa {
     private int idade;
     private String nome;
 
     public Pessoa(int i, String n) {
+        idade = i;
+        nome = n;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setNome(String n) {
+        nome = n;
+    }
+
+    public void setIdade(int i) {
+        idade = i;
+    }
+}
+
+class Aluno  {
+    private int idade;
+    private String nome;
+
+    public Aluno(int i, String n) {
         idade = i;
         nome = n;
     }
@@ -39,6 +67,15 @@ class Main {
 
         for(Pessoa pessoa : pessoas) { // interagindo sobre todas as pessoas
              System.out.println(pessoa.getNome());
+        }
+        // No list voce poderia adicionar o mesmo objeto 2 vezes e assim teria duas referencias para ele, mas no Set isso não acontece
+
+        Set<Aluno> alunos = new HashSet<>();
+        Aluno a1 = new Aluno(19, "Pedro");
+        alunos.add(a1);
+
+        for(Aluno aluno : alunos) {
+            System.out.println(aluno.getNome());
         }
     }
 }
