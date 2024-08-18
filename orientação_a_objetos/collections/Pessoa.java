@@ -1,4 +1,4 @@
-package collections;
+/*package collections;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -122,3 +122,5 @@ class Main {
         mapa.get("João") // isso vai te retornar o objeto 
     }
 }
+
+*/
