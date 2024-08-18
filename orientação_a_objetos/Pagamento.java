@@ -1,15 +1,11 @@
-import java.util.Scanner;
-
 public abstract class Pagamento {
     public abstract void processarPagamento(double valor);
 }
 
 class CartaoCredito extends Pagamento {
-    private int numeroCartao;
     private String nomeTitular;
 
-    public CartaoCredito(String nome, int numero) {
-        numeroCartao = numero;
+    public CartaoCredito(String nome) {
         nomeTitular = nome;
     }
 
@@ -40,7 +36,7 @@ class SistemaPagamento {
 
 class Efetuar {
     public static void main(String[] args) {
-        CartaoCredito cartao = new CartaoCredito("Arthur", 3000);
+        CartaoCredito cartao = new CartaoCredito("Arthur");
         PayPal paypal = new PayPal("arthursigmiranda@gmail.com");
 
         SistemaPagamento sistema = new SistemaPagamento();
