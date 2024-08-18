@@ -71,6 +71,7 @@ class Empresa {
             System.out.println("O funcionário " + x.getNome() + " deve pagar de imposto cerca de " + x.calcularImposto());
         }
 
+
         sc.close();
     }
 }
