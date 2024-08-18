@@ -39,7 +39,7 @@ class FuncionarioTemporario extends Funcionario {
 
     @Override
     public double calcularImposto() {
-        return salario * 0.05;
+        return horas_trabalhadas * taxaHora * 0.05;
     }
 }
 
@@ -70,8 +70,6 @@ class Empresa {
         for (Funcionario x : funcionarios) {
             System.out.println("O funcionário " + x.getNome() + " deve pagar de imposto cerca de " + x.calcularImposto());
         }
-
-
         sc.close();
     }
 }
