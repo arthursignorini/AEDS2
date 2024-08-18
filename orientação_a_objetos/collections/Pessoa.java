@@ -70,12 +70,19 @@ class Main {
         }
         // No list voce poderia adicionar o mesmo objeto 2 vezes e assim teria duas referencias para ele, mas no Set isso não acontece
 
-        Set<Aluno> alunos = new HashSet<>();
+        Set<Aluno> alunos = new HashSet<>(); // Nesse metodo nao vai poder adicionar o mesmo objeto
         Aluno a1 = new Aluno(19, "Pedro");
         alunos.add(a1);
 
         for(Aluno aluno : alunos) {
             System.out.println(aluno.getNome());
+        }
+
+        boolean adicionou = alunos.add(new Aluno(19, "Pedro")); // o metodo add retorna true se deu certo e nao tem o mesmo objeto já adicionado e false se tiver dado errado
+        if(adicionou) {
+            System.out.println("Adicionou");
+        } else {
+            System.out.println("Não adicionou");
         }
     }
 }
