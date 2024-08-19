@@ -60,6 +60,7 @@ public class Armazem {
 
             switch (x) {
                 case 1:
+                    System.out.println();
                     int id = produtos.size() + 1; 
                     System.out.print("Digite o nome do produto: ");
                     String nome = sc.nextLine();
@@ -69,9 +70,11 @@ public class Armazem {
                     Produtos produto = new Produtos(id, nome, preco);
                     produtos.add(produto);
                     System.out.println("Produto adicionado!");
+                    System.out.println();
                     break;
 
                 case 2:
+                    System.out.println();
                     System.out.print("Digite o id do produto que voce quer editar: ");
                     id = sc.nextInt();
                     sc.nextLine();
@@ -85,21 +88,26 @@ public class Armazem {
                             System.out.print("Digite o novo preco do produto: ");
                             preco = sc.nextDouble();
                             p.setPreco(preco);
+                            System.out.println();
                         }
                     }
                     if (!produtoEncontrado) {
                         System.out.println("Esse produto nao foi encontrado");
+                        System.out.println();
                     }
                     break;
 
                 case 3:
+                    System.out.println();
                     System.out.println("Lista de produtos:");
                     for (Produtos p : produtos) {
                         System.out.println(p);
                     }
+                    System.out.println();
                     break;
 
                 case 4:
+                    System.out.println();
                     System.out.print("Digite o id do produto que voce quer remover: ");
                     id = sc.nextInt();
                     boolean resp = false;
@@ -108,20 +116,25 @@ public class Armazem {
                             produtos.remove(p);
                             System.out.println("Essa produto foi removido");
                             resp = true;
+                            System.out.println();
                             break;
                         }
                     }
                     if (!resp) {
                         System.out.println("Esse produto não foi encontrado");
+                        System.out.println();
                     }
+
                     break;
 
                 case 5:
                     System.out.println("Saindo do programa...");
+                    System.out.println();
                     break;
 
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
+                    System.out.println();
             }
         }
         sc.close();
