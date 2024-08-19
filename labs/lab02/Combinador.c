@@ -30,6 +30,7 @@ int main() {
                 printf("%c", string1[i]);
             }
         }
+        printf("\n");
     }
 
     return 0;
