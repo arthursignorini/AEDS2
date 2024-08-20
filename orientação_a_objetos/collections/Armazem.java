@@ -1,8 +1,9 @@
 package collections;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 class Produtos {
     private int id;
@@ -19,20 +20,24 @@ class Produtos {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getNome() {
         return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public double getPreco() {
         return preco;
     }
 
-    public void setNome(String n) {
-        nome = n;
-    }
-
-    public void setPreco(double p) {
-        preco = p;
+    public void setPreco(double preco) {
+        this.preco = preco;
     }
 
     @Override
@@ -42,9 +47,11 @@ class Produtos {
 }
 
 public class Armazem {
+    private static int nextId = 1; // Static ID generator counter
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Set<Produtos> produtos = new HashSet<>();
+        List<Produtos> produtos = new ArrayList<>();
         int x = 0;
 
         while (x != 5) {
@@ -56,12 +63,12 @@ public class Armazem {
             System.out.println("5: Sair do programa");
             System.out.print("Digite qual opcao voce quer: ");
             x = sc.nextInt();
-            sc.nextLine();  // Limpa o buffer do scanner
+            sc.nextLine();  // Consumes the newline character
 
             switch (x) {
                 case 1:
                     System.out.println();
-                    int id = produtos.size() + 1; 
+                    int id = nextId++;
                     System.out.print("Digite o nome do produto: ");
                     String nome = sc.nextLine();
                     System.out.print("Digite o preco do produto: ");
@@ -78,20 +85,17 @@ public class Armazem {
                     System.out.print("Digite o id do produto que voce quer editar: ");
                     id = sc.nextInt();
                     sc.nextLine();
-                    boolean produtoEncontrado = false;
-                    for (Produtos p : produtos) {
-                        if (p.getId() == id) {
-                            produtoEncontrado = true;
-                            System.out.print("Digite o novo nome do produto: ");
-                            nome = sc.nextLine();
-                            p.setNome(nome);
-                            System.out.print("Digite o novo preco do produto: ");
-                            preco = sc.nextDouble();
-                            p.setPreco(preco);
-                            System.out.println();
-                        }
-                    }
-                    if (!produtoEncontrado) {
+                    Produtos produtoEncontrado = buscarProdutoPorId(produtos, id);
+                    if (produtoEncontrado != null) {
+                        System.out.print("Digite o novo nome do produto: ");
+                        nome = sc.nextLine();
+                        produtoEncontrado.setNome(nome);
+                        System.out.print("Digite o novo preco do produto: ");
+                        preco = sc.nextDouble();
+                        produtoEncontrado.setPreco(preco);
+                        System.out.println("Produto atualizado!");
+                        System.out.println();
+                    } else {
                         System.out.println("Esse produto nao foi encontrado");
                         System.out.println();
                     }
@@ -100,6 +104,7 @@ public class Armazem {
                 case 3:
                     System.out.println();
                     System.out.println("Lista de produtos:");
+                    produtos.sort(Comparator.comparingInt(Produtos::getId)); // Ensure sorted for display
                     for (Produtos p : produtos) {
                         System.out.println(p);
                     }
@@ -110,21 +115,16 @@ public class Armazem {
                     System.out.println();
                     System.out.print("Digite o id do produto que voce quer remover: ");
                     id = sc.nextInt();
-                    boolean resp = false;
-                    for (Produtos p : produtos) {
-                        if (p.getId() == id) {
-                            produtos.remove(p);
-                            System.out.println("Essa produto foi removido");
-                            resp = true;
-                            System.out.println();
-                            break;
-                        }
-                    }
-                    if (!resp) {
+                    sc.nextLine();
+                    Produtos produtoParaRemover = buscarProdutoPorId(produtos, id);
+                    if (produtoParaRemover != null) {
+                        produtos.remove(produtoParaRemover);
+                        atualizarIDs(produtos); // Update IDs after removal
+                        System.out.println("Produto removido!");
+                    } else {
                         System.out.println("Esse produto não foi encontrado");
-                        System.out.println();
                     }
-
+                    System.out.println();
                     break;
 
                 case 5:
@@ -138,5 +138,36 @@ public class Armazem {
             }
         }
         sc.close();
+    }
+
+    private static Produtos buscarProdutoPorId(List<Produtos> produtos, int id) {
+        // Ordenar produtos por ID
+        produtos.sort(Comparator.comparingInt(Produtos::getId));
+        
+        // Buscar produto usando busca binária
+        int esq = 0;
+        int dir = produtos.size() - 1;
+
+        while (esq <= dir) {
+            int meio = esq + (dir - esq) / 2;
+            Produtos produto = produtos.get(meio);
+
+            if (produto.getId() == id) {
+                return produto;
+            } else if (produto.getId() < id) {
+                esq = meio + 1;
+            } else {
+                dir = meio - 1;
+            }
+        }
+        return null;
+    }
+
+    private static void atualizarIDs(List<Produtos> produtos) {
+        // Sort products by ID
+        produtos.sort(Comparator.comparingInt(Produtos::getId));
+        for (int i = 0; i < produtos.size(); i++) {
+            produtos.get(i).setId(i + 1); // Reset IDs to 1, 2, 3, ...
+        }
     }
 }
