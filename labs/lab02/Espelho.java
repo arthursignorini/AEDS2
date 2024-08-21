@@ -9,11 +9,12 @@ public class Espelho {
 
         int[] vet = new int[100];
         int cont = 0;
+        int x = 0;
 
-        String input1;
-        String input2;
+        for (int i = 0; i < 3; i++) {
+            String input1;
+            String input2;
 
-        while (true) {
             input1 = sc.next();
 
             if (input1.equals(" ")) {
@@ -55,6 +56,8 @@ public class Espelho {
             // Esvaziar o vetor
             limparVetor(vet);
             cont = 0; // Resetar o contador
+            x++;
+
         }
 
         sc.close();
