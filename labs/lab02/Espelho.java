@@ -9,7 +9,6 @@ public class Espelho {
 
         int[] vet = new int[100];
         int cont = 0;
-        int x = 0;
 
         for (int i = 0; i < 3; i++) {
             String input1;
@@ -56,8 +55,6 @@ public class Espelho {
             // Esvaziar o vetor
             limparVetor(vet);
             cont = 0; // Resetar o contador
-            x++;
-
         }
 
         sc.close();
