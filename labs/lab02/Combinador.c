@@ -5,9 +5,10 @@ int main()
 {
     char string1[100], string2[100];
 
-        for (int i = 0; i < 3; i++)
-        {
-            scanf("%s %s", string1, string2);
+        while(1) {
+            
+            if(scanf("%s", &string1) == EOF) break;
+            if(scanf("%s", &string2) == EOF) break;
 
             int tam1 = strlen(string1);
             int tam2 = strlen(string2);
