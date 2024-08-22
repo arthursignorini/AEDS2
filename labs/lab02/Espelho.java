@@ -1,3 +1,5 @@
+package labs.lab02;
+
 import java.util.Scanner;
 
 public class Espelho {
