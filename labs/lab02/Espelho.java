@@ -1,5 +1,3 @@
-package labs.lab02;
-
 import java.util.Scanner;
 
 public class Espelho {
@@ -10,21 +8,13 @@ public class Espelho {
         int[] vet = new int[100];
         int cont = 0;
 
-        for (int i = 0; i < 3; i++) {
-            String input1;
-            String input2;
+        String input1;
+        String input2;
+
+        while (sc.hasNext()) {
 
             input1 = sc.next();
-
-            if (input1.equals(" ")) {
-                break;
-            }
-
             input2 = sc.next();
-
-            if (input2.equals(" ")) {
-                break;
-            }
 
             int num1 = Integer.parseInt(input1);
             int num2 = Integer.parseInt(input2);
