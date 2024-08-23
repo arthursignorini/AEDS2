@@ -1,5 +1,5 @@
-package labs.lab02;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Espelho {
@@ -7,63 +7,35 @@ public class Espelho {
 
         Scanner sc = new Scanner(System.in);
 
-        int[] vet = new int[100];
-        int cont = 0;
-
-        String input1;
-        String input2;
-
         while (sc.hasNext()) {
+            int num1 = sc.nextInt();
+            int num2 = sc.nextInt();
 
-            input1 = sc.next();
-            input2 = sc.next();
+            int menor = Math.min(num1, num2);
+            int maior = Math.max(num1, num2);
 
-            int num1 = Integer.parseInt(input1);
-            int num2 = Integer.parseInt(input2);
+            List<Integer> numeros = new ArrayList<>();
 
-            int aux;
-
-            if (num1 > num2) {
-                aux = num2;
-                while (aux <= num1) {
-                    System.out.print(aux);
-                    vet[cont] = aux;
-                    cont++;
-                    aux++;
-                }
-                printar(cont, vet);
-            } else {
-                aux = num1;
-                while (aux <= num2) {
-                    System.out.print(aux);
-                    vet[cont] = aux;
-                    cont++;
-                    aux++;
-                }
-                printar(cont, vet);
+            // Preencher a lista com números entre menor e maior
+            for (int i = menor; i <= maior; i++) {
+                System.out.print(i);
+                numeros.add(i);
             }
-            System.out.println();
 
-            // Esvaziar o vetor
-            limparVetor(vet);
-            cont = 0; // Resetar o contador
+            // Imprimir os números espelhados
+            printar(numeros);
+            System.out.println();
         }
 
         sc.close();
     }
 
-    public static void printar(int cont, int[] vet) {
-        for (int i = cont - 1; i >= 0; i--) {
-            String numeroStr = Integer.toString(vet[i]);
+    public static void printar(List<Integer> numeros) {
+        for (int i = numeros.size() - 1; i >= 0; i--) {
+            String numeroStr = Integer.toString(numeros.get(i));
             // Inverter o número e imprimir
             String numeroEspelhado = new StringBuilder(numeroStr).reverse().toString();
             System.out.print(numeroEspelhado);
-        }
-    }
-
-    public static void limparVetor(int[] vet) {
-        for (int i = 0; i < vet.length; i++) {
-            vet[i] = 0; // Define todos os valores do vetor como zero
         }
     }
 }
