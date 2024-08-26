@@ -4,21 +4,21 @@ import java.util.Scanner;
 
 public class AlgebraBooleanaRec {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in); // Substituindo MyIO por Scanner
+        Scanner scanner = new Scanner(System.in); 
         String entrada = "";
 
         do {
-            entrada = scanner.nextLine(); // Substituindo MyIO.readLine()
+            entrada = scanner.nextLine(); 
             if (!isEquals(entrada, "0")) {
                 if (solveEquation(entrada)) {
-                    System.out.println("1"); // Substituindo MyIO.println()
+                    System.out.println("1"); 
                 } else {
-                    System.out.println("0"); // Substituindo MyIO.println()
+                    System.out.println("0"); 
                 }
             }
         } while (!isEquals(entrada, "0"));
 
-        scanner.close(); // Fechando o Scanner
+        scanner.close(); 
     }
 
     public static String treatment(String input) {
