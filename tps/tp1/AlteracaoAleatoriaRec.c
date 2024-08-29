@@ -3,50 +3,32 @@
 #include <string.h>
 #include <time.h>
 
-// Função recursiva para substituir o caracter na string
-void substituicaoString(char *str, char caracter, char substituto, int index) {
-    if (str[index] == '\0') {
-        return;  // Caso base: fim da string
+void trocar (char palavra[], int tam, char letra, char substituto, int i) {
+    if(i == tam){
+        return;
     }
-    
-    // Substitui o caracter se ele for igual ao caracter de busca
-    if (str[index] == caracter) {
-        str[index] = substituto;
+    if(palavra[i] == letra){
+        palavra[i] = substituto;
     }
-    
-    // Chamada recursiva para o próximo caractere
-    substituicaoString(str, caracter, substituto, index + 1);
+    trocar(palavra, tam, letra, substituto, i+1);
 }
 
 int main() {
-    char caracter, substituto;
-    char str[100];
-    
-    // Inicializa o gerador de números aleatórios com uma seed fixa
-    srand(4);
+    char palavra[1000];
 
-    while (1) {
-        // Lê a string do usuário
-        fgets(str, 100, stdin);
-        
-        // Remove o newline ('\n') adicionado pelo fgets
-        str[strcspn(str, "\n")] = 0;
+    srand(time(NULL)); 
 
-        // Verifica se a string é "FIM"
-        if (strcmp(str, "FIM") == 0) {
+    while(1){
+        scanf(" %[^\n]", palavra);
+        if(strcmp(palavra,"FIM") == 0){
             break;
+        } else {
+            char letra = 'a' + rand() % 26;
+            char substituto = 'a' + rand() % 26;
+            int tam = strlen(palavra);
+            trocar(palavra, tam, letra, substituto, 0);
+            printf("%s\n", palavra);
         }
-
-        // Gera caracteres aleatórios entre 'a' e 'z'
-        caracter = 'a' + (rand() % 26);
-        substituto = 'a' + (rand() % 26);
-
-        // Realiza a substituição recursivamente
-        substituicaoString(str, caracter, substituto, 0);
-
-        // Exibe a nova string
-        printf("%s\n", str);
     }
-
     return 0;
 }
