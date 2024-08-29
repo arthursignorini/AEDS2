@@ -1,41 +1,53 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
+    FILE *file;
     int n;
-    scanf("%d", &n); 
+    
+    // Lê o número de entradas
+    scanf("%d", &n);
 
-    FILE *arquivo = fopen("valores.txt", "w");
+    // Abre o arquivo para escrita binária
+    file = fopen("arq.bin", "wb");
+    if (file == NULL) {
+        return 1;
+    }
 
+    // Lê e escreve os números doubles no arquivo
     for (int i = 0; i < n; i++) {
         double num;
         scanf("%lf", &num);
-        fwrite(&num, sizeof(double), 1, arquivo);  // Escreve o número como binário no arquivo
+        fwrite(&num, sizeof(double), 1, file);
+    }
+    fclose(file);
+
+    // Abre o arquivo para leitura binária
+    file = fopen("arq.bin", "rb");
+    if (file == NULL) {
+        return 1;
     }
 
-    fclose(arquivo);  // Fecha o arquivo após a escrita
+    // Move o ponteiro para o final do arquivo
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    long doubleSize = sizeof(double);
+    long pointer = fileSize - doubleSize;
 
-    arquivo = fopen("valores.txt", "r");
-
-    fseek(arquivo, 0, SEEK_END);  // Move o ponteiro para o final do arquivo
-    long pos = ftell(arquivo);    // Obtem o tamanho do arquivo em bytes
-    
-    // Cada double ocupa 8 bytes, então vamos ler de trás para frente
-    while (pos > 0) {
-        pos -= sizeof(double);   // Move o ponteiro para o início do número anterior
-        fseek(arquivo, pos, SEEK_SET);  // Ajusta o ponteiro
-
+    // Lê e imprime os números doubles em ordem reversa
+    for (int i = 0; i < n; i++) {
+        fseek(file, pointer, SEEK_SET);  // Move o ponteiro para a posição desejada
         double num;
-        fread(&num, sizeof(double), 1, arquivo);  // Lê o número
+        fread(&num, sizeof(double), 1, file);
 
-        // Verifica se o número é praticamente inteiro
         if (num == (int)num) {
-            printf("%d\n", (int)num);  // Imprime como inteiro
+            printf("%d\n", (int)num);
         } else {
-            printf("%g\n", num);  // Imprime como double
+            printf("%g\n", num);
         }
+        pointer -= doubleSize;  // Move o ponteiro para o número anterior
     }
 
-    fclose(arquivo);  // Fecha o arquivo após a leitura
-
+    fclose(file);
     return 0;
 }
