@@ -16,6 +16,7 @@ public class Sort {
             ordenar(vet2, vet1);
             conferir(vet1, vet2);
             printar(vet1);
+            a
         }
 
         sc.close();
