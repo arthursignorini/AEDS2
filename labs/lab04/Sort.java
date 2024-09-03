@@ -16,7 +16,6 @@ public class Sort {
             ordenar(vet2, vet1);
             conferir(vet1, vet2);
             printar(vet1);
-            a
         }
 
         sc.close();
@@ -98,7 +97,7 @@ public class Sort {
 
     // Verifica se deve trocar dois números pares
     private static boolean deveTrocarPares(int num1, int num2) {
-        return num1 % 2 == 0 && num2 % 2 == 0 && num1 < num2;
+        return (num1 % 2 == 0) && (num2 % 2 == 0) && (num2 < num1);
     }
 
     // Imprime os elementos de vet2
