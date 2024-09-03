@@ -72,15 +72,12 @@ public class Sort {
                 if (vet2[i] == vet2[i + 1]) {
                     if (deveTrocarParImpar(vet1[i], vet1[i + 1])) {
                         swap(vet2, i, i + 1);
-                        swap(vet1, i, i + 1);
                         trocou = true;
                     } else if (deveTrocarImpares(vet1[i], vet1[i + 1])) {
                         swap(vet2, i, i + 1);
-                        swap(vet1, i, i + 1);
                         trocou = true;
                     } else if (deveTrocarPares(vet1[i], vet1[i + 1])) {
                         swap(vet2, i, i + 1);
-                        swap(vet1, i, i + 1);
                         trocou = true;
                     }
                 }
