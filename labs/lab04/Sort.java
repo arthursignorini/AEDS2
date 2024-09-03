@@ -15,7 +15,7 @@ public class Sort {
             int[] vet2 = lerModolo(vet1, modolo);
             ordenar(vet2, vet1);
             conferir(vet1, vet2);
-            printar(vet2);
+            printar(vet1);
         }
 
         sc.close();
@@ -71,13 +71,13 @@ public class Sort {
             for (int i = 0; i < tam - 1; i++) {
                 if (vet2[i] == vet2[i + 1]) {
                     if (deveTrocarParImpar(vet1[i], vet1[i + 1])) {
-                        swap(vet2, i, i + 1);
+                        swap(vet1, i, i + 1);
                         trocou = true;
                     } else if (deveTrocarImpares(vet1[i], vet1[i + 1])) {
-                        swap(vet2, i, i + 1);
+                        swap(vet1, i, i + 1);
                         trocou = true;
                     } else if (deveTrocarPares(vet1[i], vet1[i + 1])) {
-                        swap(vet2, i, i + 1);
+                        swap(vet1, i, i + 1);
                         trocou = true;
                     }
                 }
@@ -101,8 +101,8 @@ public class Sort {
     }
 
     // Imprime os elementos de vet2
-    public static void printar(int[] vet2) {
-        for (int num : vet2) {
+    public static void printar(int[] vet1) {
+        for (int num : vet1) {
             System.out.println(num);
         }
     }
