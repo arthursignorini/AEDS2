@@ -1,5 +1,3 @@
-package labs.lab04;
-
 import java.util.Scanner;
 
 public class Sort {
@@ -15,8 +13,10 @@ public class Sort {
             int[] vet2 = lerModolo(vet1, modolo);
             ordenar(vet2, vet1);
             conferir(vet1, vet2);
+            System.out.println(tam + " " + modolo);
             printar(vet1);
         }
+        System.out.println("0 0");
 
         sc.close();
     }
