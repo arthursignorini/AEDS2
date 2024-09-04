@@ -1,10 +1,10 @@
 public class exercicio {
-    boolean isPalindromo(String s) throws Exception {
+    boolean isPalindromo(String str) throws Exception {
         
-        lista lista = new lista(s.length());
+        lista lista = new lista(str.length());
 
-        for (int i = 0; i < s.length(); i++) {
-            lista.inserirFim(s.charAt(i));
+        for (int i = 0; i < str.length(); i++) {
+            lista.inserirFim(str.charAt(i));
         }
         
         boolean resp = true;
