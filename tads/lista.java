@@ -82,7 +82,14 @@ public class lista {
     public static void main(String[] args) {
         try {
             lista lista = new lista(5);
+            lista.inserirInicio('A');
+            lista.inserirFim('B');
+            lista.inserir('C', 2);
+
+            lista.mostrar();
+
             
+
             lista.removerInicio();
             lista.mostrar();
 
