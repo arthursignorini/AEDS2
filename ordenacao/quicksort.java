@@ -11,15 +11,15 @@ public class quicksort {
 
         int[] vet = new int[tam];
 
-        for (int x : vet) {
+        for (int i=0; i<tam; i++) {
             System.out.print("Digite um valor para o vetor: ");
-            x = sc.nextInt();
+            vet[i] = sc.nextInt();
         }
 
         quicksort(0, tam-1, vet);
 
-        for (int x : vet) {
-            System.out.print(x + " ");
+        for(int i=0; i<tam; i++) {
+            System.out.print(vet[i] + " ");
         }
 
 
@@ -28,7 +28,7 @@ public class quicksort {
 
     public static void quicksort (int esq, int dir, int[] vet) {
         int i = esq, j = dir;
-        int pivo = (esq + dir) / 2;
+        int pivo = vet[(esq + dir) / 2];
 
         while (i<=j) {
             while (vet[i] < pivo) {
