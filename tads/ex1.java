@@ -22,17 +22,6 @@ class List {
         }
         vet[0] = x;
         nP++;
-        if (nP > 0) {
-            for (int i = 0; i < nP - 1; i++) {
-                for (int j = 0; j < nP - i - 1; j++) {
-                    if (vet[j] > vet[j + 1]) {
-                        int temp = vet[j + 1];
-                        vet[j + 1] = vet[j];
-                        vet[j] = temp;
-                    }
-                }
-            }
-        }
         return true; // Inserção com sucesso
     }
 
@@ -54,6 +43,17 @@ class List {
         }
         if (x >= 0) {
             inserirInicio(x);
+            if (nP > 0) {
+                for (int i = 0; i < nP - 1; i++) {
+                    for (int j = 0; j < nP - i - 1; j++) {
+                        if (vet[j] > vet[j + 1]) {
+                            int temp = vet[j + 1];
+                            vet[j + 1] = vet[j];
+                            vet[j] = temp;
+                        }
+                    }
+                }
+            }
             return true;
         } else {
             inserirFim(x);
