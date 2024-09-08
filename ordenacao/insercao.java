@@ -16,7 +16,7 @@ public class insercao {
             vet[i] = sc.nextInt();
         }
 
-        insercao(vet, tam);
+        insercaosort(vet, tam);
 
         System.out.print("Vetor ordenado: ");
         for (int i = 0; i < tam; i++) {
@@ -24,7 +24,7 @@ public class insercao {
         }
     }
 
-    public static void insercao(int[] vet, int tam) {
+    public static void insercaosort (int[] vet, int tam) {
         for (int i = 1; i < tam; i++) {
             int temp = vet[i];
             int j = i - 1;

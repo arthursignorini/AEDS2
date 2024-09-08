@@ -16,7 +16,7 @@ public class selecao {
             vet[i] = sc.nextInt();
         }
 
-        selecao(vet, tam);
+        selecaosort(vet, tam);
 
         System.out.print("Vetor ordenado: ");
         for (int i = 0; i < tam; i++) {
@@ -24,7 +24,7 @@ public class selecao {
         }
     }
 
-    public static void selecao (int[] vet, int tam) {
+    public static void selecaosort (int[] vet, int tam) {
         for(int i=0; i<tam-1; i++) {
             int menor = i;
             for(int j=i+1; j<tam; j++) {
