@@ -36,8 +36,6 @@ public class Pilha {
                 pilha.inserir(num);
 
             }
-            
-            
             int resp = pilha.remover();
             System.out.println("Elemento removido: " + resp);
             
