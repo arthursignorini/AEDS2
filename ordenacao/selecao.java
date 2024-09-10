@@ -29,10 +29,10 @@ public class selecao {
             int menor = i;
             for(int j=i+1; j<tam; j++) {
                 if(vet[menor] > vet[j]) {
-                    swap(menor, j, vet);
                     menor = j;
                 }
             }
+            swap(menor, i, vet);
         }
     }
 
