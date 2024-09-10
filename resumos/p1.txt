@@ -54,11 +54,13 @@ TADS LINEARES
 * PILHA - o primeiro elemento a entrar é o último a sair - First in, Last out
 * usa os métodos de inserir e remover - empilhar e desempilhar
 * Inserir no fim e remover do fim -> isso montaria uma pilha
+* O melhor método então é o de IF e RF
 
 * FILA - o primeiro a entrar é o primeiro a sair - First in, First out
 * Enfileiras e desenfileirar
 * Inserir no fim e remover no início - monta uma fila - mas o método de remover do início não é eficiente
 * Inserir no início e remover no final - monta uma fila - mas o método de inserir no início não é eficiente
+* Então o melhor método é IF e RI ou II e RF
 * Por isso se utiliza outra estrutura = FILA CIRCULAR
 
 
