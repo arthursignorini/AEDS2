@@ -4,23 +4,23 @@ import java.util.Scanner;
 
 public class insercao {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        try (Scanner sc = new Scanner(System.in)) {
+            System.out.print("Digite o tamanho do vetor: ");
+            int tam = sc.nextInt();
 
-        System.out.print("Digite o tamanho do vetor: ");
-        int tam = sc.nextInt();
+            int[] vet = new int[tam];
 
-        int[] vet = new int[tam];
+            for (int i = 0; i < tam; i++) {
+                System.out.print("Digite um valor para o vetor: ");
+                vet[i] = sc.nextInt();
+            }
 
-        for (int i = 0; i < tam; i++) {
-            System.out.print("Digite um valor para o vetor: ");
-            vet[i] = sc.nextInt();
-        }
+            insercaosort(vet, tam);
 
-        insercaosort(vet, tam);
-
-        System.out.print("Vetor ordenado: ");
-        for (int i = 0; i < tam; i++) {
-            System.out.print(vet[i] + " ");
+            System.out.print("Vetor ordenado: ");
+            for (int i = 0; i < tam; i++) {
+                System.out.print(vet[i] + " ");
+            }
         }
     }
 
