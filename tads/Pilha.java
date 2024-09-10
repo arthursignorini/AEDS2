@@ -6,43 +6,45 @@ public class Pilha {
 
     Pilha(int tam) {
         vet = new int[tam];
-        n = 0; // Inicializa n como 0 para rastrear o número de elementos na pilha
+        n = 0; 
     }
 
-    void inserir(int x) throws Exception { // deve inserir no fim para empilhar
-        if (n >= vet.length) {
-            throw new Exception("ERRO: Pilha cheia");
+    void inserir (int x) throws Exception { // deve inserir no fim para empilhar
+        if(n == vet.length) {
+            throw new Exception ("Pilha cheia");
         }
         vet[n] = x;
         n++;
     }
 
     int remover() throws Exception { // deve remover do fim para desempilhar
-        if (n == 0) { // Verifica se a pilha está vazia
+        if (n == 0) { 
             throw new Exception("ERRO: Pilha vazia");
         }
-        n--; // Decrementa n para "remover" o último elemento
-        return vet[n]; // Retorna o último elemento
+        n--; 
+        return vet[n]; 
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Pilha pilha = new Pilha(6); // Cria uma pilha com 6 posições
+        Pilha pilha = new Pilha(6); // cria uma pilha com 6 posições
         
         try {
-            // Inserir 6 números na pilha
+            
             for (int i = 0; i < 6; i++) {
                 int num = sc.nextInt();
                 pilha.inserir(num);
+
             }
             
-            // Remover o último número inserido e imprimir
+            
             int resp = pilha.remover();
             System.out.println("Elemento removido: " + resp);
+            
         } catch (Exception e) {
-            System.out.println(e.getMessage()); // Exibe a mensagem de erro, se houver
+            System.out.println(e.getMessage()); 
         } finally {
-            sc.close(); // Fecha o Scanner
+            sc.close(); 
         }
     }
 }
