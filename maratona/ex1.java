@@ -15,5 +15,6 @@ public class ex1 {
             conta = ( duracao / num ) - 1;
             System.out.println(conta);
         }
+        sc.close();
     }
 }
