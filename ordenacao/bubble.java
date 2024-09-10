@@ -16,7 +16,6 @@ public class bubble {
             }
 
             boolean trocou = true;
-            while(trocou) {
                 for(int i=0; i<tam-1 && trocou; i++) {
                     trocou = false;
                     for(int j=0; j<tam-1-i; j++) {
@@ -28,7 +27,6 @@ public class bubble {
                         }
                     }
                 }
-            }
             for(int i=0; i<tam; i++) {
                 System.out.println(vet[i]);
             }
