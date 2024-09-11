@@ -1,7 +1,7 @@
 package preprova;
 
 public class ex3 {
-    public static void main(String[] args) {
+    public static void main(String[] args) { // bubble
         int[] vet = { 3, 1, 9, 5, 4, 7 };
         int tam = vet.length;
 
