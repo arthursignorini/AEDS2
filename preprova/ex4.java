@@ -1,6 +1,6 @@
 package preprova;
 
-public class ex4 {
+public class ex4 { // inserção otimizado
     public static void main(String[] args) {
         int[] vet = { 3, 1, 9, 5, 4, 7 };
         int tam = vet.length;
