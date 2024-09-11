@@ -12,12 +12,10 @@ public class Dicionario_de_Andy {
         while (sc.hasNext()) {
             String palavra = sc.next().toLowerCase();
             palavras.add(palavra);  
-        }
-
+        }        
         
         Collections.sort(palavras);
 
-        
         for (String palavra : palavras) {
             System.out.println(palavra);
         }
