@@ -11,6 +11,11 @@ public class Dicionario_de_Andy {
         
         while (sc.hasNext()) {
             String palavra = sc.next().toLowerCase();
+            for(int i=0; i<palavra.length(); i++) {
+                if(palavra.charAt(i) < 'a' && palavra.charAt(i) > 'z') {
+                    tratar(palavra);
+                }
+            }
             palavras.add(palavra);  
         }        
         
@@ -21,5 +26,15 @@ public class Dicionario_de_Andy {
         }
 
         sc.close();  
+    }
+
+    public static String tratar(String palavra) {
+        StringBuilder result = new StringBuilder();
+        for(int i=0; i<palavra.length(); i++) {
+            if(Character.isLetter(palavra.charAt(i))) {
+                result.append(palavra.charAt(i)); 
+            }
+        }
+        return result.toString();
     }
 }
