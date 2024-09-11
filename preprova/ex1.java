@@ -1,6 +1,6 @@
 package preprova;
 
-public class ex1 {
+public class ex1 { // seleção
     public static void main(String[]agrs) {
         int[] vet = {3,1,9,5,4,7};
         int tam = vet.length;
@@ -10,7 +10,6 @@ public class ex1 {
             for(int j=i+1; j<tam; j++){
                 if(vet[menor] > vet[j]) {
                     menor = j;
-                    j--;
                 }
             }
             if(menor != i) {
