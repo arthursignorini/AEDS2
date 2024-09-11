@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-public class Dicionario_de_Andy {
+public class Dicionario_de_Andy { // TÁ ERRADA
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         ArrayList<String> palavras = new ArrayList<>(); 
