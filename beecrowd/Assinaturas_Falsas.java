@@ -42,7 +42,8 @@ public class Assinaturas_Falsas {
                 }
             }
             System.out.println(contador);
-        }   
+        }
+        sc.close();
     }
 
     public static int verificar (String palavra1, String palavra2) {
