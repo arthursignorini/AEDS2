@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Time_Duendes {
+class Time_Duendes {
     String nome;
     int idade;
 
@@ -9,6 +9,13 @@ public class Time_Duendes {
         nome = n;
         idade = i;
     }
+
+    public String toString() {
+        return nome + " " + idade;
+    }
+}
+
+public class Duendes {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         ArrayList<Time_Duendes> duendes = new ArrayList<>();
@@ -82,3 +89,4 @@ public class Time_Duendes {
         } while (trocou);
     }
 }
+
