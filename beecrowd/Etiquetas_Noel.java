@@ -1,3 +1,5 @@
+package beecrowd;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -29,5 +31,6 @@ public class Etiquetas_Noel {
                 }
             }
         }
+        sc.close();
     }
 }
