@@ -12,16 +12,11 @@ int main() {
         if (fgets(alfa, sizeof(alfa), stdin) == NULL) {
             break;
         }
-
-        alfa[strcspn(alfa, "\n")] = '\0';
-
-
+        
         if (fgets(str, sizeof(str), stdin) == NULL) {
 
             break;
         }
-
-        str[strcspn(str, "\n")] = '\0';
 
         int contador = 0;
 
@@ -34,6 +29,5 @@ int main() {
         }
         printf("%d\n", contador);
     }
-
     return 0;
 }
