@@ -29,7 +29,8 @@ public class Teclado_Quebrado {
                     }
                 }
             }
-            inicio.append(fim);
+            
+            inicio.reverse().append(fim);
             System.out.println(inicio.toString());
         }
         sc.close();
