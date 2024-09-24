@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Adivinhação de Números</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <p>Adivinhe o número de 4 dígitos. Você tem 8 tentativas!</p>
+        <input type="text" id="numeroInput" placeholder="Digite um número de 4 dígitos" maxlength="4">
+        <button id="enviarBtn">Enviar</button>
+        <p id="mensagem"></p>
+        <p id="tentativas"></p>
+        
+        <!-- Div para exibir os resultados anteriores -->
+        <div id="resultadosAnteriores">
+            <h2>Tentativas anteriores</h2>
+            <ul id="historico"></ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
