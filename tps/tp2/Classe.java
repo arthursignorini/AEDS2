@@ -4,7 +4,6 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-
 class Pokemon {
     // atributos
     private int id;
@@ -66,7 +65,6 @@ class Pokemon {
         this.isLegendary = Boolean.parseBoolean(dados[9]);
         this.captureDate = LocalDate.parse(dados[10], DateTimeFormatter.ISO_DATE);
     }
-    
 
     // Getters e Setters
     public int getId() {
@@ -157,15 +155,6 @@ class Pokemon {
         this.captureDate = captureDate;
     }
 
-    // Imprimir
-    @Override
-    public String toString() {
-        return "Pokemon [id=" + id + ", generation=" + generation + ", name=" + name + ", description=" + description
-                + ", types=" + types + ", abilities=" + abilities + ", weight=" + weight + ", height=" + height
-                + ", captureRate=" + captureRate + ", isLegendary=" + isLegendary + ", caputreDate=" + caputreDate
-                + "]";
-    }
-
     // Clone
     public Pokemon clone() {
         Pokemon clone = new Pokemon();
@@ -184,6 +173,7 @@ class Pokemon {
         return clone;
     }
 
+    // Leitura dos dados dentro do CSV
     public ArrayList<Pokemon> Ler() {
         ArrayList<Pokemon> pokemons = new ArrayList<>();
         String csvFile = "/tmp/pokemon.csv";
@@ -200,10 +190,22 @@ class Pokemon {
                 Pokemon pokemon = new Pokemon(linha.split(";"));
                 pokemons.add(pokemon);
             }
+            br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return pokemons;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = (captureDate != null) ? captureDate.format(formatter) : "Data não disponível";
+        return "[#" + id + " -> " + name + ": " + description +
+                " - " + types + " - " + abilities +
+                " - " + weight + "kg - " + height + "m - " +
+                captureRate + "% - " + isLegendary +
+                " - " + generation + " gen] - " + formattedDate;
     }
 
     private static String lineFormat(String linha) {
@@ -222,6 +224,19 @@ class Pokemon {
 
 public class Classe {
     public static void main(String[] args) {
+        // Criação de uma instância da classe Pokemon
+        Pokemon pokemonManager = new Pokemon();
 
+        // Ler os dados do CSV
+        ArrayList<Pokemon> pokemons = pokemonManager.Ler();
+
+        // Exibir as informações dos Pokémon
+        if (pokemons.isEmpty()) {
+            System.out.println("Nenhum Pokémon encontrado.");
+        } else {
+            for (Pokemon pokemon : pokemons) {
+                System.out.println(pokemon);
+            }
+        }
     }
 }
