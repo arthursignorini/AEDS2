@@ -19,10 +19,7 @@ class Pokemon {
     private boolean isLegendary;
     private Date captureDate;
 
-    // MÉTODOS
-
-    // Construtor
-
+    // Construtores, Getters e Setters, Clone, etc.
     public Pokemon() {
         this.id = 0;
         this.generation = 0;
@@ -33,48 +30,35 @@ class Pokemon {
         this.weight = 0.0;
         this.height = 0.0;
         this.captureRate = 0;
-        this.isLegendary = true;
+        this.isLegendary = false;
         this.captureDate = null;
     }
 
-    public Pokemon(int id, int generation, String name, String description, ArrayList<String> types,
-            ArrayList<String> abilities, double weight, double height, int captureRate,
-            boolean isLegendary, Date captureDate) {
-        this.id = id;
-        this.generation = generation;
-        this.name = name;
-        this.description = description;
-        this.types = types;
-        this.abilities = abilities;
-        this.weight = weight;
-        this.height = height;
-        this.captureRate = captureRate;
-        this.isLegendary = isLegendary;
-        this.captureDate = captureDate;
-    }
-
+    // Construtor para aceitar dados do CSV
     public Pokemon(String[] infos) throws Exception {
-        for (int i = 0; i < infos.length; i++)
-            if (infos[i].isEmpty())
+        for (int i = 0; i < infos.length; i++) {
+            if (infos[i].isEmpty()) {
                 infos[i] = "0";
+            }
+        }
+
         this.id = Integer.parseInt(infos[0]);
         this.generation = Integer.parseInt(infos[1]);
         this.name = infos[2];
         this.description = infos[3];
         this.types = new ArrayList<>();
-        infos[4] = "'" + infos[4] + "'";
+        infos[4] = infos[4].replace("'", "");
         this.types.add(infos[4]);
         if (!infos[5].equals("0")) {
-            infos[5] = "'" + infos[5].trim() + "'";
+            infos[5] = infos[5].replace("'", "");
             this.types.add(infos[5]);
         }
-        infos[6] = infos[6].replace("\"", "");
-        infos[6] = infos[6].replace("[", "");
-        infos[6] = infos[6].replace("]", "");
+        infos[6] = infos[6].replace("\"", "").replace("[", "").replace("]", "");
         String[] tmp = infos[6].split(",");
         this.abilities = new ArrayList<>();
-        for (String s : tmp)
+        for (String s : tmp) {
             abilities.add(s.trim());
+        }
         this.weight = Double.parseDouble(infos[7]);
         this.height = Double.parseDouble(infos[8]);
         this.captureRate = Integer.parseInt(infos[9]);
@@ -87,153 +71,16 @@ class Pokemon {
         }
     }
 
-    // Getters e Setters
+    // Getters
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getGeneration() {
-        return generation;
-    }
-
-    public void setGeneration(int generation) {
-        this.generation = generation;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ArrayList<String> getTypes() {
-        return types;
-    }
-
-    public void setTypes(ArrayList<String> types) {
-        this.types = types != null ? types : new ArrayList<>();
-    }
-
-    public ArrayList<String> getAbilities() {
-        return abilities;
-    }
-
-    public void setAbilities(ArrayList<String> abilities) {
-        this.abilities = abilities != null ? abilities : new ArrayList<>();
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
-    public int getCaptureRate() {
-        return captureRate;
-    }
-
-    public void setCaptureRate(int captureRate) {
-        this.captureRate = captureRate;
-    }
-
-    public boolean isLegendary() {
-        return isLegendary;
-    }
-
-    public void setLegendary(boolean isLegendary) {
-        this.isLegendary = isLegendary;
-    }
-
-    public Date getCaptureDate() {
-        return captureDate;
-    }
-
-    public void setCaptureDate(Date captureDate) {
-        this.captureDate = captureDate;
-    }
-
-    // Clone
-    public Pokemon clone() {
-        Pokemon clone = new Pokemon();
-
-        clone.id = this.id;
-        clone.generation = this.generation;
-        clone.name = this.name;
-        clone.description = this.description;
-        clone.types = new ArrayList<>(this.types);
-        clone.abilities = new ArrayList<>(this.abilities);
-        clone.weight = this.weight;
-        clone.height = this.height;
-        clone.captureRate = this.captureRate;
-        clone.isLegendary = this.isLegendary;
-        clone.captureDate = this.captureDate;
-        return clone;
-    }
-
-    // leitura do csv
-    public ArrayList<Pokemon> Ler() {
-        ArrayList<Pokemon> pokemons = new ArrayList<>();
-        String csvFile = "/tmp/pokemon.csv";
-        String linha;
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(csvFile));
-            br.readLine(); 
-
-            while ((linha = br.readLine()) != null) {
-                if (linha.equals("FIM")) {
-                    break;
-                }
-
-                linha = formatar(linha);
-
-                Pokemon pokemon = new Pokemon(linha.split(";"));
-                pokemons.add(pokemon);
-            }
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return pokemons;
-    }
-
-    // imprimir
-    @Override
-    public String toString() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String formattedDate = (captureDate != null) ? formatter.format(captureDate) : "Data não disponível";
-        return "[#" + id + " -> " + name + ": " + description +
-                " - " + types + " - " + abilities +
-                " - " + weight + "kg - " + height + "m - " +
-                captureRate + "% - " + isLegendary +
-                " - " + generation + " gen] - " + formattedDate;
-    }
-
-    // aqui a string está sendo tratada
+    // Função para formatar a string
     private static String formatar(String linha) {
         boolean in_list = false;
         StringBuilder str = new StringBuilder(linha);
@@ -246,46 +93,91 @@ class Pokemon {
         }
         return str.toString();
     }
+
+    // Método para leitura do CSV, agora filtrando pelos IDs
+    public ArrayList<Pokemon> Ler(ArrayList<Integer> idsFiltrados) {
+        ArrayList<Pokemon> pokemons = new ArrayList<>();
+        String csvFile = "/tmp/pokemon.csv";
+        String linha;
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(csvFile));
+            br.readLine(); // Ignorar cabeçalho
+
+            while ((linha = br.readLine()) != null) {
+                if (linha.equals("FIM")) {
+                    break;
+                }
+
+                linha = formatar(linha);
+
+                try {
+                    Pokemon pokemon = new Pokemon(linha.split(";"));
+                    if (idsFiltrados.contains(pokemon.getId())) {
+                        pokemons.add(pokemon);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pokemons;
+    }
+
+    // Imprimir informações do Pokémon
+    @Override
+    public String toString() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = (captureDate != null) ? formatter.format(captureDate) : "Data não disponível";
+        return "[#" + id + " -> " + name + ": " + description +
+                " - " + types + " - " + abilities +
+                " - " + weight + "kg - " + height + "m - " +
+                captureRate + "% - " + isLegendary +
+                " - " + generation + " gen] - " + formattedDate;
+    }
 }
 
 public class PesquisaSequencial {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Leitura dos IDs
+        ArrayList<Integer> ids = new ArrayList<>();
+        String input;
+        while (!(input = sc.nextLine()).equals("FIM")) {
+            ids.add(Integer.parseInt(input));
+        }
+
+        // Criando uma instância para ler os pokémons
         Pokemon pokemonManager = new Pokemon();
-        
-        ArrayList<Pokemon> pokemons = pokemonManager.Ler();
+        ArrayList<Pokemon> pokemons = pokemonManager.Ler(ids);
 
         if (pokemons.isEmpty()) {
             System.out.println("Nenhum Pokémon encontrado.");
         } else {
-            // searchPokemonId(pokemons);
-            searchPokemonNome(pokemons);
-        }
-    }
-
-    // aqui está lendo a entrada e achando o pokemon
-    public static void searchPokemonId(ArrayList<Pokemon> pokemons) {
-        Scanner sc = new Scanner(System.in);
-        String resp;
-        while (!(resp = sc.nextLine()).equals("FIM")) {
-            int id = Integer.parseInt(resp);
-            for (Pokemon pokemon : pokemons) {
-                if (pokemon.getId() == id) {
-                    System.out.println(pokemon);
-                }
+            // Procurar pelos nomes fornecidos
+            if (!searchPokemonNome(pokemons, sc)) {
+                System.out.println("NAO");
             }
         }
+
         sc.close();
     }
 
-    public static boolean searchPokemonNome(ArrayList<Pokemon> pokemons) {
-        Scanner sc = new Scanner(System.in);
+    // aqui está lendo a entrada e achando o pokemon
+    public static boolean searchPokemonNome(ArrayList<Pokemon> pokemons, Scanner sc) {
         String nomePokemon;
+        boolean foundAny = false;
         while (!(nomePokemon = sc.nextLine()).equals("FIM")) {
             boolean found = false;
-            for (int i = 0; i < pokemons.size(); i++) {
-                if (nomePokemon.equals(pokemons.get(i).getName())) {
+            for (Pokemon pokemon : pokemons) {
+                if (nomePokemon.equalsIgnoreCase(pokemon.getName())) {
                     System.out.println("SIM");
                     found = true;
+                    foundAny = true;
                     break;
                 }
             }
@@ -293,7 +185,6 @@ public class PesquisaSequencial {
                 System.out.println("NAO");
             }
         }
-        sc.close();
-        return false;
+        return foundAny;
     }
 }
