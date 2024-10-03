@@ -266,7 +266,7 @@ public class Heapsort {
         }
     }
 
-    // ordenar utilizando HeapSort baseado na altura e nome
+    // ordenar utilizando HeapSort 
     public static void ordenar(ArrayList<Pokemon> pokemons) {
         int n = pokemons.size();
 
@@ -280,28 +280,37 @@ public class Heapsort {
             pokemons.set(i, temp);
             heapify(pokemons, i, 0);
         }
+
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                if(pokemons.get(i).getHeight() == pokemons.get(j).getHeight()) {
+                    if(pokemons.get(i).getName().compareTo(pokemons.get(j).getName()) < 0) {
+                        Pokemon temporario = pokemons.get(i);
+                        pokemons.set(i, pokemons.get(j));
+                        pokemons.set(j, temporario);
+                    }
+                }
+            }
+        }
     }
 
+    
     private static void heapify(ArrayList<Pokemon> pokemons, int n, int i) {
         int largest = i; 
         int left = 2 * i + 1; 
         int right = 2 * i + 2; 
 
-        // Comparação de altura
-        if (left < n && (pokemons.get(left).getHeight() > pokemons.get(largest).getHeight() ||
-            (pokemons.get(left).getHeight() == pokemons.get(largest).getHeight() &&
-             pokemons.get(left).getName().compareToIgnoreCase(pokemons.get(largest).getName()) < 0))) {
+        
+        if (left < n && pokemons.get(left).getHeight() > pokemons.get(largest).getHeight()) {
             largest = left;
         }
 
-        // Comparação de altura
-        if (right < n && (pokemons.get(right).getHeight() > pokemons.get(largest).getHeight() ||
-            (pokemons.get(right).getHeight() == pokemons.get(largest).getHeight() &&
-             pokemons.get(right).getName().compareToIgnoreCase(pokemons.get(largest).getName()) < 0))) {
+        
+        if (right < n && pokemons.get(right).getHeight() > pokemons.get(largest).getHeight()) {
             largest = right;
         }
 
-        // Troca se necessário
+       
         if (largest != i) {
             Pokemon swap = pokemons.get(i);
             pokemons.set(i, pokemons.get(largest));
@@ -325,4 +334,3 @@ public class Heapsort {
         sc.close();
     }
 }
-
