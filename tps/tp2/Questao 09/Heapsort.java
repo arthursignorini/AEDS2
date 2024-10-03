@@ -248,7 +248,7 @@ class Pokemon {
     }
 }
 
-public class Selecao {
+public class Heapsort {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
         
@@ -260,25 +260,53 @@ public class Selecao {
         } else {
             searchPokemonId(pokemons, pokemonsOrdenados);
             ordenar(pokemonsOrdenados);
-            for(int i=0; i<pokemonsOrdenados.size(); i++) {
-                System.out.println(pokemonsOrdenados.get(i));
+            for (Pokemon pokemon : pokemonsOrdenados) {
+                System.out.println(pokemon);
             }
         }
     }
 
-    // ordenar 
+    // ordenar utilizando HeapSort baseado na altura e nome
     public static void ordenar(ArrayList<Pokemon> pokemons) {
-        for (int i = 0; i < pokemons.size() - 1; i++) {
-            int indexMenor = i;
-            for (int j = i + 1; j < pokemons.size(); j++) {
-                if (pokemons.get(j).getName().compareToIgnoreCase(pokemons.get(indexMenor).getName()) < 0) {
-                    indexMenor = j;
-                }
-            }
-            // Troca
-            Pokemon temp = pokemons.get(indexMenor);
-            pokemons.set(indexMenor, pokemons.get(i));
+        int n = pokemons.size();
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(pokemons, n, i);
+        }
+
+        for (int i = n - 1; i > 0; i--) {
+            Pokemon temp = pokemons.get(0);
+            pokemons.set(0, pokemons.get(i));
             pokemons.set(i, temp);
+            heapify(pokemons, i, 0);
+        }
+    }
+
+    private static void heapify(ArrayList<Pokemon> pokemons, int n, int i) {
+        int largest = i; 
+        int left = 2 * i + 1; 
+        int right = 2 * i + 2; 
+
+        // Comparação de altura
+        if (left < n && (pokemons.get(left).getHeight() > pokemons.get(largest).getHeight() ||
+            (pokemons.get(left).getHeight() == pokemons.get(largest).getHeight() &&
+             pokemons.get(left).getName().compareToIgnoreCase(pokemons.get(largest).getName()) < 0))) {
+            largest = left;
+        }
+
+        // Comparação de altura
+        if (right < n && (pokemons.get(right).getHeight() > pokemons.get(largest).getHeight() ||
+            (pokemons.get(right).getHeight() == pokemons.get(largest).getHeight() &&
+             pokemons.get(right).getName().compareToIgnoreCase(pokemons.get(largest).getName()) < 0))) {
+            largest = right;
+        }
+
+        // Troca se necessário
+        if (largest != i) {
+            Pokemon swap = pokemons.get(i);
+            pokemons.set(i, pokemons.get(largest));
+            pokemons.set(largest, swap);
+            heapify(pokemons, n, largest);
         }
     }
 
@@ -297,3 +325,4 @@ public class Selecao {
         sc.close();
     }
 }
+

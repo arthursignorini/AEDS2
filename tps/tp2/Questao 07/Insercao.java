@@ -248,7 +248,7 @@ class Pokemon {
     }
 }
 
-public class Selecao {
+public class Insercao {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
         
@@ -268,17 +268,15 @@ public class Selecao {
 
     // ordenar 
     public static void ordenar(ArrayList<Pokemon> pokemons) {
-        for (int i = 0; i < pokemons.size() - 1; i++) {
-            int indexMenor = i;
-            for (int j = i + 1; j < pokemons.size(); j++) {
-                if (pokemons.get(j).getName().compareToIgnoreCase(pokemons.get(indexMenor).getName()) < 0) {
-                    indexMenor = j;
-                }
+        for (int i = 1; i < pokemons.size(); i++) {
+            Pokemon key = pokemons.get(i);
+            int j = i - 1;
+    
+            while (j >= 0 && pokemons.get(j).getCaptureDate().compareTo(key.getCaptureDate()) > 0) {
+                pokemons.set(j + 1, pokemons.get(j));
+                j = j - 1;
             }
-            // Troca
-            Pokemon temp = pokemons.get(indexMenor);
-            pokemons.set(indexMenor, pokemons.get(i));
-            pokemons.set(i, temp);
+            pokemons.set(j + 1, key);
         }
     }
 
