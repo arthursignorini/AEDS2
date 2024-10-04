@@ -88,7 +88,6 @@ public class QuickSortVariacoes {
         array[j] = temp;
     }
 
-    // Método principal para testar as implementações com diferentes tamanhos de arrays
     public static void main(String[] args) {
         int[] tamanhos = {100, 1000, 10000};
         for (int tamanho : tamanhos) {
@@ -153,7 +152,7 @@ public class QuickSortVariacoes {
     private static int[] gerarArrayQuaseOrdenado(int tamanho) {
         int[] array = gerarArrayOrdenado(tamanho);
         Random rand = new Random();
-        for (int i = 0; i < tamanho / 10; i++) { // 10% de elementos trocados
+        for (int i = 0; i < tamanho / 10; i++) { 
             int indice1 = rand.nextInt(tamanho);
             int indice2 = rand.nextInt(tamanho);
             trocar(array, indice1, indice2);
