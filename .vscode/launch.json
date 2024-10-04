@@ -3,6 +3,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "QuickSortVariacoes",
+      "request": "launch",
+      "mainClass": "QuickSortVariacoes",
+      "projectName": "AEDS2_af65bf31"
+    },
+    {
+      "type": "java",
+      "name": "QuickSort",
+      "request": "launch",
+      "mainClass": "QuickSort",
+      "projectName": "AEDS2_af65bf31"
+    },
+    {
+      "type": "java",
       "name": "Classe",
       "request": "launch",
       "mainClass": "Classe",
