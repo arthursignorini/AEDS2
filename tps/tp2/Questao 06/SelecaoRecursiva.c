@@ -373,9 +373,11 @@ int main(int argc, char **argv) {
     return errsv;
   }
 
+  // Consome o cabeçalho
   while (fgetc(csv) != '\n')
     ;
 
+  // Lê o CSV e cria os Pokémons
   while (n < MAX_POKEMON && getline(&input, &tamanho, csv) != -1)
     pokemon[n++] = pokemon_de_string(input);
   fclose(csv);
@@ -390,7 +392,7 @@ int main(int argc, char **argv) {
     input[strcspn(input, "\n")] = 0;
     int id = atoi(input);
 
-    for (int i = 0; i < sizeof(pokemon) / sizeof(pokemon[0]); i++) {
+    for (int i = 0; i < n; i++) {
       if (pokemon[i] == NULL) {
         break;
       }
@@ -399,17 +401,22 @@ int main(int argc, char **argv) {
         contador++;
       }
     }
-
-    // Ordena os Pokémon pelo nome usando seleção recursiva
-    selecao_recursiva(lista, n, 0);
-
-    // Imprime os Pokémon ordenados
-    for (int i = 0; i < contador; i++)
-    {
-        imprimir_pokemon(lista[i]);
-        liberar_pokemon(lista[i]);
-    }
-
   }
+
+  // Ordena os Pokémon pelo nome usando seleção recursiva
+  selecao_recursiva(lista, contador, 0);
+
+  // Imprime os Pokémon ordenados
+  for (int i = 0; i < contador; i++) {
+    imprimir_pokemon(lista[i]);
+    liberar_pokemon(lista[i]); // Não esqueça de liberar a memória do clone
+  }
+
+  // Libera a memória dos Pokémon originais
+  for (int i = 0; i < n; i++) {
+    liberar_pokemon(pokemon[i]);
+  }
+
+  free(input);
   return EXIT_SUCCESS;
 }
