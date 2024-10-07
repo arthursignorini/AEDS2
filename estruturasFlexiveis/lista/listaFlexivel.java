@@ -1,3 +1,4 @@
+package estruturasFlexiveis.lista;
 import java.util.*;
 
 public class listaFlexivel {
