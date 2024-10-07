@@ -1,7 +1,7 @@
-package estruturasFlexiveis.lista;
+package estruturasFlexiveis.pilha;
 import java.util.*;
 
-public class listaFlexivel {
+public class pilhaFlexivel {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Pilha pilha = new Pilha();
