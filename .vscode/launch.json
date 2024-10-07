@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "quick",
+      "request": "launch",
+      "mainClass": "ordenacao.quick",
+      "projectName": "AEDS2_619956aa"
+    },
+    {
+      "type": "java",
       "name": "QuickSortVariacoes",
       "request": "launch",
       "mainClass": "QuickSortVariacoes",
