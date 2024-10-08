@@ -2,6 +2,8 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
@@ -251,7 +253,6 @@ class Pokemon {
 public class Insercao {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
-        
         ArrayList<Pokemon> pokemons = pokemonManager.Ler();
         ArrayList<Pokemon> pokemonsOrdenados = new ArrayList<>();
 
@@ -259,28 +260,45 @@ public class Insercao {
             System.out.println("Nenhum Pokémon encontrado.");
         } else {
             searchPokemonId(pokemons, pokemonsOrdenados);
-            ordenar(pokemonsOrdenados);
-            for(int i=0; i<pokemonsOrdenados.size(); i++) {
-                System.out.println(pokemonsOrdenados.get(i));
+
+            // Inicializando contadores
+            int comparacoes = 0;
+            int movimentacoes = 0;
+
+            long inicio = System.currentTimeMillis(); // Início do tempo de execução
+
+            ordenar(pokemonsOrdenados, comparacoes, movimentacoes);
+
+            long fim = System.currentTimeMillis(); // Fim do tempo de execução
+            long tempoExecucao = fim - inicio; // Tempo em milissegundos
+
+            for (Pokemon p : pokemonsOrdenados) {
+                System.out.println(p);
             }
+
+            // Escrever o arquivo de log
+            escreverLog(tempoExecucao, comparacoes, movimentacoes);
         }
     }
 
-    // ordenar 
-    public static void ordenar(ArrayList<Pokemon> pokemons) {
+    // Ordenação por Inserção
+    public static void ordenar(ArrayList<Pokemon> pokemons, int comparacoes, int movimentacoes) {
         for (int i = 1; i < pokemons.size(); i++) {
             Pokemon key = pokemons.get(i);
             int j = i - 1;
-    
+
             while (j >= 0 && pokemons.get(j).getCaptureDate().compareTo(key.getCaptureDate()) > 0) {
+                comparacoes++; // Incrementa o contador de comparações
                 pokemons.set(j + 1, pokemons.get(j));
-                j = j - 1;
+                j--;
+                movimentacoes++; // Incrementa o contador de movimentações
             }
             pokemons.set(j + 1, key);
+            movimentacoes++; // Contabiliza o movimento da chave
         }
     }
 
-    // aqui está lendo a entrada e achando o pokemon
+    // Busca de Pokémon por ID
     public static void searchPokemonId(ArrayList<Pokemon> pokemons, ArrayList<Pokemon> pokemonsOrdenados) {
         Scanner sc = new Scanner(System.in);
         String resp;
@@ -293,5 +311,14 @@ public class Insercao {
             }
         }
         sc.close();
+    }
+
+    // Escrever o arquivo de log
+    public static void escreverLog(long tempoExecucao, int comparacoes, int movimentacoes) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("848122_insercao.txt"))) {
+            writer.printf("848122\t%dms\t%d comparacoes\t%d movimentacoes\n", tempoExecucao, comparacoes, movimentacoes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
