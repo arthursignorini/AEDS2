@@ -2,6 +2,8 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
@@ -22,7 +24,6 @@ class Pokemon {
     // MÉTODOS
 
     // Construtor
-
     public Pokemon() {
         this.id = 0;
         this.generation = 0;
@@ -37,22 +38,6 @@ class Pokemon {
         this.captureDate = null;
     }
 
-    public Pokemon(int id, int generation, String name, String description, ArrayList<String> types,
-            ArrayList<String> abilities, double weight, double height, int captureRate,
-            boolean isLegendary, Date captureDate) {
-        this.id = id;
-        this.generation = generation;
-        this.name = name;
-        this.description = description;
-        this.types = types;
-        this.abilities = abilities;
-        this.weight = weight;
-        this.height = height;
-        this.captureRate = captureRate;
-        this.isLegendary = isLegendary;
-        this.captureDate = captureDate;
-    }
-
     public Pokemon(String[] infos) throws Exception {
         for (int i = 0; i < infos.length; i++)
             if (infos[i].isEmpty())
@@ -62,15 +47,11 @@ class Pokemon {
         this.name = infos[2];
         this.description = infos[3];
         this.types = new ArrayList<>();
-        infos[4] = "'" + infos[4] + "'";
-        this.types.add(infos[4]);
+        this.types.add("'" + infos[4] + "'");
         if (!infos[5].equals("0")) {
-            infos[5] = "'" + infos[5].trim() + "'";
-            this.types.add(infos[5]);
+            this.types.add("'" + infos[5].trim() + "'");
         }
-        infos[6] = infos[6].replace("\"", "");
-        infos[6] = infos[6].replace("[", "");
-        infos[6] = infos[6].replace("]", "");
+        infos[6] = infos[6].replace("\"", "").replace("[", "").replace("]", "");
         String[] tmp = infos[6].split(",");
         this.abilities = new ArrayList<>();
         for (String s : tmp)
@@ -92,106 +73,12 @@ class Pokemon {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getGeneration() {
-        return generation;
-    }
-
-    public void setGeneration(int generation) {
-        this.generation = generation;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ArrayList<String> getTypes() {
-        return types;
-    }
-
-    public void setTypes(ArrayList<String> types) {
-        this.types = types != null ? types : new ArrayList<>();
-    }
-
-    public ArrayList<String> getAbilities() {
-        return abilities;
-    }
-
-    public void setAbilities(ArrayList<String> abilities) {
-        this.abilities = abilities != null ? abilities : new ArrayList<>();
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
     public int getCaptureRate() {
         return captureRate;
     }
 
-    public void setCaptureRate(int captureRate) {
-        this.captureRate = captureRate;
-    }
-
-    public boolean isLegendary() {
-        return isLegendary;
-    }
-
-    public void setLegendary(boolean isLegendary) {
-        this.isLegendary = isLegendary;
-    }
-
-    public Date getCaptureDate() {
-        return captureDate;
-    }
-
-    public void setCaptureDate(Date captureDate) {
-        this.captureDate = captureDate;
-    }
-
-    // Clone
-    public Pokemon clone() {
-        Pokemon clone = new Pokemon();
-
-        clone.id = this.id;
-        clone.generation = this.generation;
-        clone.name = this.name;
-        clone.description = this.description;
-        clone.types = new ArrayList<>(this.types);
-        clone.abilities = new ArrayList<>(this.abilities);
-        clone.weight = this.weight;
-        clone.height = this.height;
-        clone.captureRate = this.captureRate;
-        clone.isLegendary = this.isLegendary;
-        clone.captureDate = this.captureDate;
-        return clone;
+    public String getName() {
+        return name;
     }
 
     // leitura do csv
@@ -202,7 +89,7 @@ class Pokemon {
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(csvFile));
-            br.readLine(); 
+            br.readLine(); // Ignora cabeçalho
 
             while ((linha = br.readLine()) != null) {
                 if (linha.equals("FIM")) {
@@ -210,7 +97,6 @@ class Pokemon {
                 }
 
                 linha = formatar(linha);
-
                 Pokemon pokemon = new Pokemon(linha.split(";"));
                 pokemons.add(pokemon);
             }
@@ -233,7 +119,6 @@ class Pokemon {
                 " - " + generation + " gen] - " + formattedDate;
     }
 
-    // aqui a string está sendo tratada
     private static String formatar(String linha) {
         boolean in_list = false;
         StringBuilder str = new StringBuilder(linha);
@@ -251,7 +136,6 @@ class Pokemon {
 public class Counting {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
-        
         ArrayList<Pokemon> pokemons = pokemonManager.Ler();
         ArrayList<Pokemon> pokemonsOrdenados = new ArrayList<>();
 
@@ -259,74 +143,81 @@ public class Counting {
             System.out.println("Nenhum Pokémon encontrado.");
         } else {
             searchPokemonId(pokemons, pokemonsOrdenados);
-            ordenar(pokemonsOrdenados);
+
+            // Inicializando contadores
+            int comparacoes = 0;
+            int movimentacoes = 0;
+
+            long inicio = System.currentTimeMillis(); // Início do tempo de execução
+
+            pokemonsOrdenados = countingSort(pokemonsOrdenados, comparacoes, movimentacoes);
+
+            long fim = System.currentTimeMillis(); // Fim do tempo de execução
+            long tempoExecucao = fim - inicio; // Tempo em milissegundos
+
             for (Pokemon pokemon : pokemonsOrdenados) {
                 System.out.println(pokemon);
             }
+
+            // Escrever o arquivo de log
+            escreverLog(tempoExecucao, comparacoes, movimentacoes);
         }
     }
 
-    // ordenar utilizando Couting Sort - de acordo com o captureRate 
-    public static void ordenar(ArrayList<Pokemon> pokemons) {
-        if (pokemons.isEmpty()) return;
-    
-        // Determine the range of captureRate
-        int maxCaptureRate = Integer.MIN_VALUE;
-        int minCaptureRate = Integer.MAX_VALUE;
-        for (Pokemon pokemon : pokemons) {
-            int captureRate = pokemon.getCaptureRate();
-            if (captureRate > maxCaptureRate) {
-                maxCaptureRate = captureRate;
-            }
-            if (captureRate < minCaptureRate) {
-                minCaptureRate = captureRate;
-            }
-        }
-    
-        // Initialize count array
-        int range = maxCaptureRate - minCaptureRate + 1;
-        int[] count = new int[range];
-        Pokemon[] output = new Pokemon[pokemons.size()];
-    
-        // Count occurrences of each captureRate
-        for (Pokemon pokemon : pokemons) {
-            count[pokemon.getCaptureRate() - minCaptureRate]++;
-        }
-    
-        // Modify count array to contain actual positions
-        for (int i = 1; i < count.length; i++) {
-            count[i] += count[i - 1];
-        }
-    
-        // Build the output array
-        for (int i = pokemons.size() - 1; i >= 0; i--) {
-            int captureRate = pokemons.get(i).getCaptureRate();
-            output[count[captureRate - minCaptureRate] - 1] = pokemons.get(i);
-            count[captureRate - minCaptureRate]--;
-        }
-    
-        // Copy the sorted array back to the original array
-        for (int i = 0; i < pokemons.size(); i++) {
-            pokemons.set(i, output[i]);
-        }
-    
-        // Optional: Sort by height and name if capture rates are the same
-        for (int i = 0; i < pokemons.size() - 1; i++) {
-            for (int j = i + 1; j < pokemons.size(); j++) {
-                if (pokemons.get(i).getCaptureRate() == pokemons.get(j).getCaptureRate()) {
-                    if (pokemons.get(i).getHeight() > pokemons.get(j).getHeight() ||
-                        (pokemons.get(i).getHeight() == pokemons.get(j).getHeight() &&
-                         pokemons.get(i).getName().compareTo(pokemons.get(j).getName()) > 0)) {
-                        Pokemon temp = pokemons.get(i);
-                        pokemons.set(i, pokemons.get(j));
-                        pokemons.set(j, temp);
-                    }
-                }
-            }
-        }
+    // Ordenar utilizando Counting Sort com desempate por nome
+public static ArrayList<Pokemon> countingSort(ArrayList<Pokemon> pokemons, int comparacoes, int movimentacoes) {
+    int maxCaptureRate = getMaxCaptureRate(pokemons);
+    int[] countArray = new int[maxCaptureRate + 1];
+    Pokemon[] sortedPokemons = new Pokemon[pokemons.size()]; // Inicializar o array com tamanho correto
+
+    // Contagem dos captureRates
+    for (Pokemon pokemon : pokemons) {
+        countArray[pokemon.getCaptureRate()]++;
     }
-    
-    // aqui está lendo a entrada e achando o pokemon
+
+    // Acumular os valores de contagem
+    for (int i = 1; i <= maxCaptureRate; i++) {
+        countArray[i] += countArray[i - 1];
+    }
+
+    // Ordenar os Pokémon
+    for (int i = pokemons.size() - 1; i >= 0; i--) {
+        Pokemon pokemon = pokemons.get(i);
+        int posicao = countArray[pokemon.getCaptureRate()] - 1;
+        
+        // Caso a posição já tenha um Pokémon com o mesmo captureRate, faz o desempate por nome
+        while (sortedPokemons[posicao] != null && 
+               sortedPokemons[posicao].getCaptureRate() == pokemon.getCaptureRate() &&
+               sortedPokemons[posicao].getName().compareTo(pokemon.getName()) > 0) {
+            posicao--; // Mover para posição anterior se necessário
+        }
+        
+        sortedPokemons[posicao] = pokemon;
+        countArray[pokemon.getCaptureRate()]--;
+        movimentacoes++; // Conta a movimentação
+    }
+
+    // Converter o array de volta para ArrayList
+    ArrayList<Pokemon> sortedList = new ArrayList<>();
+    for (Pokemon pokemon : sortedPokemons) {
+        sortedList.add(pokemon);
+    }
+
+    return sortedList;
+}
+
+    // Método para obter o valor máximo do captureRate
+    public static int getMaxCaptureRate(ArrayList<Pokemon> pokemons) {
+        int max = pokemons.get(0).getCaptureRate();
+        for (int i = 1; i < pokemons.size(); i++) {
+            if (pokemons.get(i).getCaptureRate() > max) {
+                max = pokemons.get(i).getCaptureRate();
+            }
+        }
+        return max;
+    }
+
+    // Método para ler a entrada e encontrar os Pokémon pelo ID
     public static void searchPokemonId(ArrayList<Pokemon> pokemons, ArrayList<Pokemon> pokemonsOrdenados) {
         Scanner sc = new Scanner(System.in);
         String resp;
@@ -339,5 +230,14 @@ public class Counting {
             }
         }
         sc.close();
+    }
+
+    // Escrever o arquivo de log
+    public static void escreverLog(long tempoExecucao, int comparacoes, int movimentacoes) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("848122_countingsort.txt"))) {
+            writer.printf("848122\t%dms\t%d comparacoes\t%d movimentacoes\n", tempoExecucao, comparacoes, movimentacoes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
