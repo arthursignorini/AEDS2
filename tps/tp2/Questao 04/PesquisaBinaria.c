@@ -1,201 +1,220 @@
-#include <ctype.h>
-#include <errno.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <unistd.h>
 
-#define DB_PADRAO "/tmp/pokemon.csv"
+#define MAX_NAME_LEN 50
+#define MAX_DESC_LEN 200
+#define MAX_TYPE_LEN 20
+#define MAX_ABILITIES 10
+#define MAX_DATE_LEN 11
+#define MAX_LINE_LEN 512
 
-enum tipos_pokemon {
-    SEM_TIPO = 0,
-    INSETO,
-    NOTURNO,
-    DRAGAO,
-    ELETRICO,
-    FADA,
-    LUTADOR,
-    FOGO,
-    VOADOR,
-    FANTASMA,
-    GRAMA,
-    TERRA,
-    GELO,
-    NORMAL,
-    VENENOSO,
-    PSIQUICO,
-    PEDRA,
-    METAL,
-    AGUA
-};
-
-typedef int tipo_pokemon;
-
-typedef struct habilidades {
-    char **lista;
-    int num;
-} habilidades_pokemon;
-
-typedef struct data {
-    int ano;
-    int mes;
-    int dia;
-} Data;
-
-typedef struct informacoes {
-    double peso;
-    double altura;
-    char *nome;
-    char *descricao;
-    Data data_captura;
-    tipo_pokemon tipo[2];
+typedef struct {
     int id;
-    int taxa_captura;
-    int geracao;
-    bool eh_lendario;
-    habilidades_pokemon habilidades;
+    int generation;
+    char name[MAX_NAME_LEN];
+    char description[MAX_DESC_LEN];
+    char type1[MAX_TYPE_LEN];
+    char type2[MAX_TYPE_LEN];
+    char abilities[MAX_ABILITIES][MAX_TYPE_LEN];
+    int ability_count;
+    double weight;
+    double height;
+    int captureRate;
+    bool isLegendary;
+    char captureDate[MAX_DATE_LEN];
 } Pokemon;
 
-void selection_sort(Pokemon *pokemons[], int n, int *comparacoes, int *movimentacoes);
-void gerar_arquivo_log_selecao(long tempo_execucao, int comparacoes, int movimentacoes);
+void trimWhitespace(char *str) {
+    char *end;
+    while (isspace((unsigned char)*str)) str++;
+    if (*str == 0) return;
+    end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) end--;
+    end[1] = '\0';
+}
 
-Pokemon *pokemon_de_string(char *str);
-Pokemon *clonar_pokemon(const Pokemon *p);
-static inline Pokemon *novo_pokemon(void);
-void liberar_pokemon(Pokemon *restrict p);
+void parseAbilities(char *abilitiesString, Pokemon *pokemon) {
+    char *token = strtok(abilitiesString, ",");
+    pokemon->ability_count = 0;
 
-#define MAX_POKEMON 801
+    while (token != NULL && pokemon->ability_count < MAX_ABILITIES) {
+        trimWhitespace(token);
+        if (token[0] == '\'') memmove(token, token + 1, strlen(token));
+        if (token[strlen(token) - 1] == '\'') token[strlen(token) - 1] = '\0';
+        strcpy(pokemon->abilities[pokemon->ability_count++], token);
+        token = strtok(NULL, ",");
+    }
+}
 
-int main(int argc, char **argv) {
-    FILE *csv = fopen((argc > 1) ? argv[1] : DB_PADRAO, "r");
-    Pokemon *pokemon[MAX_POKEMON] = {NULL};
-    int n = 0;
-    char *input = NULL;
-    size_t tamanho;
-    int comparacoes = 0; // Contador de comparações
-    int movimentacoes = 0; // Contador de movimentações
-    clock_t inicio = clock(); // Início da contagem do tempo
+void initializePokemon(Pokemon *pokemon) {
+    pokemon->ability_count = 0;
+    pokemon->weight = -1.0;
+    pokemon->height = -1.0;
+    pokemon->captureRate = -1;
+    pokemon->isLegendary = false;
+}
 
-    if (!csv) {
-        int errsv = errno;
-        perror("erro ao abrir");
-        return errsv;
+bool lerPokemon(int id, Pokemon *pokemon) {
+    if (access("/tmp/pokemon.csv", F_OK) == -1) {
+        printf("Arquivo não encontrado no caminho especificado.\n");
+        return false;
     }
 
-    while (fgetc(csv) != '\n') // Ignorar cabeçalho
-        ;
+    FILE *file = fopen("/tmp/pokemon.csv", "r");
+    if (!file) {
+        printf("ERROR: File Not Found.\n");
+        return false;
+    }
 
-    while (n < MAX_POKEMON && getline(&input, &tamanho, csv) != -1)
-        pokemon[n++] = pokemon_de_string(input);
-    fclose(csv);
+    char line[MAX_LINE_LEN];
+    fgets(line, sizeof(line), file); // Ignorar cabeçalho
 
-    Pokemon *lista[1000];
-    int contador = 0;
+    while (fgets(line, sizeof(line), file)) {
+        int file_id;
+        if (sscanf(line, "%d", &file_id) != 1) {
+            continue; // Pula para a próxima linha
+        }
 
-    // Ler IDs para seleção dos pokemons
-    while (getline(&input, &tamanho, stdin) != -1) {
-        if (strcmp(input, "FIM\n") == 0)
+        if (file_id == id) {
+            initializePokemon(pokemon);
+
+            char abilitiesString[MAX_LINE_LEN] = "";
+            int legendary;
+            char type2_temp[MAX_TYPE_LEN] = "";
+
+            int matched = sscanf(line, "%d,%d,%49[^,],%199[^,],%19[^,],%19[^,],\"%[^\"]\",%lf,%lf,%d,%d,%10[^\n",
+                                 &pokemon->id, &pokemon->generation,
+                                 pokemon->name, pokemon->description,
+                                 pokemon->type1, type2_temp,
+                                 abilitiesString,
+                                 &pokemon->weight, &pokemon->height,
+                                 &pokemon->captureRate, &legendary,
+                                 pokemon->captureDate);
+
+            if (matched < 6 || strlen(type2_temp) == 0) {
+                strcpy(pokemon->type2, "");
+            } else {
+                strcpy(pokemon->type2, type2_temp);
+            }
+
+            char *start = abilitiesString;
+            char *end = abilitiesString + strlen(abilitiesString) - 1;
+            while (*start == '[' || *start == '\'' || *start == ' ') start++;
+            while (*end == ']' || *end == '\'' || *end == ' ') end--;
+            *(end + 1) = '\0';
+
+            parseAbilities(start, pokemon);
+            pokemon->isLegendary = (bool)legendary;
+
+            fclose(file);
+            return true;
+        }
+    }
+
+    fclose(file);
+    return false;
+}
+
+void imprimirPokemon(Pokemon *pokemon) {
+    printf("[#%d -> %s: %s - [", pokemon->id, pokemon->name, pokemon->description);
+    printf("'%s'", pokemon->type1);
+
+    if (strlen(pokemon->type2) > 0) {
+        printf(", '%s'", pokemon->type2);
+    } else {
+        printf(", 'N/A'");
+    }
+    printf("] - [");
+
+    for (int i = 0; i < pokemon->ability_count; i++) {
+        printf("'%s'%s", pokemon->abilities[i], (i < pokemon->ability_count - 1) ? ", " : "");
+    }
+    printf("] - ");
+
+    printf("%.1fkg - %.1fm - ", 
+           (pokemon->weight >= 0) ? pokemon->weight : -1.0, 
+           (pokemon->height >= 0) ? pokemon->height : -1.0);
+
+    printf("%d%% - %s - %d gen] - %s\n",
+           (pokemon->captureRate >= 0) ? pokemon->captureRate : -1,
+           pokemon->isLegendary ? "true" : "false",
+           pokemon->generation,
+           (pokemon->captureDate[0] != '\0') ? pokemon->captureDate : "N/A");
+}
+
+int compareByName(const void *a, const void *b) {
+    Pokemon *pokemonA = (Pokemon *)a;
+    Pokemon *pokemonB = (Pokemon *)b;
+    return strcmp(pokemonA->name, pokemonB->name);
+}
+
+int binarySearch(Pokemon pokemons[], int size, const char *name) {
+    int left = 0;
+    int right = size - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        int cmp = strcmp(pokemons[mid].name, name);
+
+        if (cmp == 0) {
+            return mid; // Nome encontrado
+        }
+        if (cmp < 0) {
+            left = mid + 1; // Nome está à direita
+        } else {
+            right = mid - 1; // Nome está à esquerda
+        }
+    }
+    return -1; // Nome não encontrado
+}
+
+int main() {
+    Pokemon pokemons[1000];
+    int totalPokemons = 0;
+    char input[10];
+
+    // Leitura dos IDs de Pokémon e armazenamento
+    while (true) {
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\r")] = '\0'; 
+        trimWhitespace(input);
+
+        if (strcasecmp(input, "FIM") == 0) {
+            break; 
+        }
+
+        int idParaBuscar = atoi(input); 
+        if (lerPokemon(idParaBuscar, &pokemons[totalPokemons])) {
+            totalPokemons++;
+        } else {
+            printf("Pokémon não encontrado.\n");
+        }
+    }
+
+    // Ordenação dos Pokémon pelo nome
+    qsort(pokemons, totalPokemons, sizeof(Pokemon), compareByName);
+
+    // Pesquisa binária por nomes
+    while (true) {
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\r")] = '\0';
+        trimWhitespace(input);
+
+        if (strcasecmp(input, "FIM") == 0) {
             break;
-        // Remove nova linha
-        input[strcspn(input, "\n")] = 0;
-        int id = atoi(input);
+        }
 
-        for (int i = 0; i < n; i++) {
-            if (pokemon[i] == NULL) {
-                break;
-            }
-            if (pokemon[i]->id == id) {
-                lista[contador] = clonar_pokemon(pokemon[i]);
-                contador++;
-            }
+        int result = binarySearch(pokemons, totalPokemons, input);
+        if (result != -1) {
+            printf("SIM\n");
+        } else {
+            printf("NAO\n");
         }
     }
 
-    // Ordenar a lista usando Selection Sort
-    selection_sort(lista, contador, &comparacoes, &movimentacoes);
-
-    clock_t fim = clock(); // Fim da contagem do tempo
-    long tempo_execucao = ((long)(fim - inicio)) * 1000 / CLOCKS_PER_SEC; // Tempo em milissegundos
-
-    gerar_arquivo_log_selecao(tempo_execucao, comparacoes, movimentacoes); // Gera o arquivo de log
-
-    // Libera memória
-    for (int i = 0; i < n; i++) {
-        liberar_pokemon(pokemon[i]);
-    }
-
-    free(input);
-    return EXIT_SUCCESS;
-}
-
-// Implementação do Selection Sort
-void selection_sort(Pokemon *pokemons[], int n, int *comparacoes, int *movimentacoes) {
-    for (int i = 0; i < n - 1; i++) {
-        int min_idx = i;
-        for (int j = i + 1; j < n; j++) {
-            (*comparacoes)++; // Incrementa o número de comparações
-            if (strcmp(pokemons[j]->nome, pokemons[min_idx]->nome) < 0) {
-                min_idx = j;
-            }
-        }
-        if (min_idx != i) {
-            Pokemon *temp = pokemons[i];
-            pokemons[i] = pokemons[min_idx];
-            pokemons[min_idx] = temp;
-            (*movimentacoes)++; // Incrementa o número de movimentações
-        }
-    }
-}
-
-// Função para gerar o arquivo de log
-void gerar_arquivo_log_selecao(long tempo_execucao, int comparacoes, int movimentacoes) {
-    FILE *log = fopen("848122_selecao.txt", "w");
-    if (!log) {
-        perror("Erro ao criar arquivo de log");
-        exit(EXIT_FAILURE);
-    }
-    fprintf(log, "848122\t%ldms\t%d comparacoes\t%d movimentacoes\n", tempo_execucao, comparacoes, movimentacoes);
-    fclose(log);
-}
-
-// Função que converte uma string do CSV em um objeto Pokemon
-Pokemon *pokemon_de_string(char *str) {
-    Pokemon *p = novo_pokemon();
-    // Implementação da função de leitura do CSV (deve existir)
-    // ler_pokemon(p, str);  // Função não fornecida
-    return p;
-}
-
-// Função que clona um Pokémon
-Pokemon *clonar_pokemon(const Pokemon *p) {
-    return pokemon_de_parametros(
-        p->id, p->geracao, p->nome, p->descricao, p->tipo, &p->habilidades,
-        p->peso, p->altura, p->taxa_captura, p->eh_lendario, p->data_captura
-    );
-}
-
-// Função que aloca memória para um novo Pokémon
-static inline Pokemon *novo_pokemon(void) {
-    Pokemon *res = malloc(sizeof(Pokemon));
-    if (!res) {
-        int errsv = errno;
-        perror("Falha ao alocar memória para Pokémon");
-        exit(errsv);
-    }
-    return res;
-}
-
-// Função que libera a memória de um Pokémon
-void liberar_pokemon(Pokemon *restrict p) {
-    if (p != NULL) {
-        free(p->nome);
-        free(p->descricao);
-        for (int i = 0; i < p->habilidades.num; ++i) {
-            free(p->habilidades.lista[i]);
-        }
-        free(p->habilidades.lista);
-        free(p);
-    }
+    return 0;
 }
