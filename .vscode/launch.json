@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "QuickSortVariacoes",
+      "request": "launch",
+      "mainClass": "labs.lab06.QuickSortVariacoes",
+      "projectName": "AEDS2_af65bf31"
+    },
+    {
+      "type": "java",
       "name": "listaFlexivel",
       "request": "launch",
       "mainClass": "estruturasFlexiveis.listaFlexivel",
