@@ -1,272 +1,368 @@
-#include <stdio.h>
-#include <string.h>
+#include <ctype.h>
+#include <errno.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-// Atributos de um pokemon
-typedef struct
+#define DB_PADRAO "/tmp/pokemon.csv"
+
+enum tipos_pokemon
 {
+    SEM_TIPO = 0,
+    INSETO,
+    NOTURNO,
+    DRAGAO,
+    ELETRICO,
+    FADA,
+    LUTADOR,
+    FOGO,
+    VOADOR,
+    FANTASMA,
+    GRAMA,
+    TERRA,
+    GELO,
+    NORMAL,
+    VENENOSO,
+    PSIQUICO,
+    PEDRA,
+    METAL,
+    AGUA
+};
+
+typedef int tipo_pokemon;
+
+typedef struct habilidades
+{
+    char **lista;
+    int num;
+} habilidades_pokemon;
+
+typedef struct data
+{
+    int ano;
+    int mes;
+    int dia;
+} Data;
+
+typedef struct informacoes
+{
+    double peso;
+    double altura;
+    char *nome;
+    char *descricao;
+    Data data_captura;
+    tipo_pokemon tipo[2];
     int id;
-    int generation;
-    char name[80];
-    char description[80];
-    char type1[80];
-    char type2[80];
-    char abilities[200];
-    double weight;
-    double height;
-    int captureRate;
-    bool isLegendary;
-    char captureDate[12];
+    int taxa_captura;
+    int geracao;
+    bool eh_lendario;
+    habilidades_pokemon habilidades;
 } Pokemon;
 
-// Declaração das funções
-void printPokemon(const Pokemon *pokemon);
-char *strsep(char **stringp, const char *delim);
-void formatarString(char *str);
-void adicionarPokemon(char *linha, Pokemon *pokemon);
-void lerArquivo(const char *nomeArquivo, Pokemon pokemons[], int *totalPokemons);
-int buscarPokemonID(int id, Pokemon pokemons[], int totalPokemons);
+int main(int argc, char **argv);
+void ler_pokemon(Pokemon *restrict p, char *str);
+void imprimir_pokemon(Pokemon *restrict const p);
+Pokemon *pokemon_de_string(char *str);
+Pokemon *pokemon_de_parametros(int id, int geracao, const char *nome, const char *descricao, const tipo_pokemon tipo[2],
+                               const habilidades_pokemon *habilidades, double peso_kg, double altura_m, int taxa_captura, bool eh_lendario,
+                               Data data_captura);
+Pokemon *clonar_pokemon(const Pokemon *p);
+static inline Pokemon *novo_pokemon(void);
+void liberar_pokemon(Pokemon *restrict p);
+static habilidades_pokemon habilidades_de_string(char *str);
+static tipo_pokemon tipo_de_string(const char *str);
+static const char *tipo_para_string(tipo_pokemon tipo);
 
-// Printar um pokemon em tal formato
-void printPokemon(const Pokemon *pokemon)
+Pokemon *pokemon_de_string(char *str)
 {
-    printf("[#%d -> %s: %s - ['%s'", 
-           pokemon->id, 
-           pokemon->name, 
-           pokemon->description, 
-           pokemon->type1);
-    
-    if (strcmp(pokemon->type2, "") != 0)
-    {
-        printf(", '%s']", pokemon->type2);
-    } else
-    {
-        printf("]");
-    }
-
-    printf(" - %s - %.1fkg - %.1fm - %d%% - %s - %d gen] - %s", 
-           pokemon->abilities, 
-           pokemon->weight, 
-           pokemon->height, 
-           pokemon->captureRate, 
-           pokemon->isLegendary ? "true" : "false", 
-           pokemon->generation, 
-           pokemon->captureDate);
+    Pokemon *res = novo_pokemon();
+    ler_pokemon(res, str);
+    return res;
 }
 
-// Função manual para strsep
-char *strsep(char **stringp, const char *delim)
+Pokemon *pokemon_de_parametros(int id, int geracao, const char *nome, const char *descricao, const tipo_pokemon tipo[2],
+                               const habilidades_pokemon *habilidades, double peso_kg, double altura_m, int taxa_captura, bool eh_lendario,
+                               Data data_captura)
 {
-    char *start = *stringp;
-    char *p;
+    Pokemon *res = novo_pokemon();
+    habilidades_pokemon habilidades_clone = {.num = habilidades->num};
+    habilidades_clone.lista = malloc(habilidades_clone.num * sizeof(char *));
+    for (int i = 0; i < habilidades_clone.num; ++i)
+        habilidades_clone.lista[i] = strdup(habilidades->lista[i]);
+    *res = (Pokemon){.id = id, .geracao = geracao, .nome = strdup(nome), .descricao = strdup(descricao), .tipo[0] = tipo[0], .tipo[1] = tipo[1], .habilidades = habilidades_clone, .peso = peso_kg, .altura = altura_m, .taxa_captura = taxa_captura, .eh_lendario = eh_lendario, .data_captura = data_captura};
+    return res;
+}
 
-    if (start == NULL)
+Pokemon *clonar_pokemon(const Pokemon *p)
+{
+    return pokemon_de_parametros(p->id, p->geracao, p->nome, p->descricao, p->tipo, &p->habilidades, p->peso, p->altura,
+                                 p->taxa_captura, p->eh_lendario, p->data_captura);
+}
+
+static inline Pokemon *novo_pokemon(void)
+{
+    Pokemon *res = malloc(sizeof(Pokemon));
+    if (!res)
     {
-        return NULL;
+        int errsv = errno;
+        perror("Falha ao alocar memória para Pokémon");
+        exit(errsv);
     }
+    return res;
+}
 
-    p = strpbrk(start, delim);
-    if (p)
+void liberar_pokemon(Pokemon *restrict p)
+{
+    if (p != NULL)
     {
-        *p = '\0';
-        *stringp = p + 1;
+        free(p->nome);
+        free(p->descricao);
+        for (int i = 0; i < p->habilidades.num; ++i)
+            free(p->habilidades.lista[i]);
+        free(p->habilidades.lista);
+        free(p);
+    }
+}
+
+void ler_pokemon(Pokemon *restrict p, char *str)
+{
+    char *const post_list = strstr(str, "']\",") + 3;
+    char *token = NULL;
+    char *save = NULL;
+    int contador_token = 0;
+    if (!post_list)
+    {
+        int errsv = errno;
+        perror("erro");
+        exit(errsv);
+    }
+    p->id = atoi(strtok_r(str, ",", &save));
+    p->geracao = atoi(strtok_r(NULL, ",", &save));
+    token = strtok_r(NULL, ",", &save);
+    p->nome = strdup(token);
+    token = strtok_r(NULL, ",", &save);
+    p->descricao = strdup(token);
+    p->tipo[0] = tipo_de_string(strtok_r(NULL, ",", &save));
+    token = strtok_r(NULL, "[,", &save);
+    p->tipo[1] = (*token == '"') ? SEM_TIPO : tipo_de_string(token);
+    p->habilidades = habilidades_de_string(strtok_r(NULL, "]", &save));
+    str = post_list;
+    save = NULL;
+    for (int i = 0; str[i]; ++i)
+        if (str[i] == ',' && str[i + 1] != ',')
+            ++contador_token;
+    if (contador_token == 5)
+    {
+        p->peso = atof(strtok_r(str, ",", &save));
+        p->altura = atof(strtok_r(NULL, ",", &save));
     }
     else
     {
-        *stringp = NULL;
+        p->altura = p->peso = 0;
     }
-
-    return start;
+    p->taxa_captura = atoi(strtok_r(save ? NULL : str, ",", &save));
+    p->eh_lendario = atoi(strtok_r(NULL, ",", &save));
+    p->data_captura.dia = atoi(strtok_r(NULL, "/", &save));
+    p->data_captura.mes = atoi(strtok_r(NULL, "/", &save));
+    p->data_captura.ano = atoi(strtok_r(NULL, "/\n\r", &save));
 }
 
-// Retirar as " da string e substituir todas as , foras de [ ] por ; 
-void formatarString(char *str)
+void imprimir_pokemon(Pokemon *restrict const p)
 {
-    int dentroColchetes = 0;  
-    int j = 0;  
-
-    for (int i = 0; str[i] != '\0'; i++)
+    printf("[#%d -> %s: %s - ['%s'", p->id, p->nome, p->descricao,
+           tipo_para_string(p->tipo[0]));
+    if (p->tipo[1] != SEM_TIPO)
+        printf(", '%s'", tipo_para_string(p->tipo[1]));
+    printf("] - ['");
+    for (int i = 0; i < p->habilidades.num; ++i)
     {
-        if (str[i] == '[')
+        if (i > 0)
         {
-            dentroColchetes = 1;  
-        } else if (str[i] == ']')
-        {
-            dentroColchetes = 0; 
+            printf(", ");
         }
-
-        if (str[i] == ',' && dentroColchetes == 0)
-        {
-            str[j++] = ';';
-        }
-        else if (str[i] != '"')
-        {
-            str[j++] = str[i];
-        }
+        printf("%s", p->habilidades.lista[i]);
     }
-
-    str[j] = '\0'; 
+    printf("] - %0.1lfkg - %0.1lfm - %u%% - %s - %u gen] - %02u/%02u/%04u\n",
+           p->peso, p->altura, p->taxa_captura,
+           p->eh_lendario ? "true" : "false", p->geracao,
+           p->data_captura.dia, p->data_captura.mes, p->data_captura.ano);
 }
 
-// Adicionar um pokemon ao array
-void adicionarPokemon(char *linha, Pokemon *pokemon)
+static habilidades_pokemon habilidades_de_string(char *str)
 {
-    char *token;
-    token = strsep(&linha, ";");
-    pokemon->id = atoi(token);
-
-    token = strsep(&linha, ";");
-    pokemon->generation = atoi(token);
-
-    token = strsep(&linha, ";");
-    strcpy(pokemon->name, token);
-
-    token = strsep(&linha, ";");
-    strcpy(pokemon->description, token);
-
-    token = strsep(&linha, ";");
-    strcpy(pokemon->type1, token);
-
-    token = strsep(&linha, ";");
-    if (token[0] != 0) strcpy(pokemon->type2, token);
-
-    token = strsep(&linha, ";");
-    strcpy(pokemon->abilities, token);
-
-    token = strsep(&linha, ";");
-    pokemon->weight = atof(token);  
-
-    token = strsep(&linha, ";");
-    pokemon->height = atof(token);
-
-    token = strsep(&linha, ";");
-    pokemon->captureRate = atoi(token);
-
-    token = strsep(&linha, ";");
-    pokemon->isLegendary = atoi(token);  
-
-    token = strsep(&linha, ";");
-    strcpy(pokemon->captureDate, token);
-}
-
-// Ler o CSV linha por linha e ir setando os pokemons
-void lerArquivo(const char *nomeArquivo, Pokemon pokemons[], int *totalPokemons)
-{
-    FILE *arquivo = fopen(nomeArquivo, "r");
-    if (arquivo == NULL) {
-        printf("Erro ao abrir o arquivo %s\n", nomeArquivo);
-        return;
-    }
-
-    char linha[512];
-    *totalPokemons = 0;
-
-    while (fgets(linha, sizeof(linha), arquivo))
+    habilidades_pokemon res = {.num = 1};
+    char *save = NULL;
+    for (int i = 0; str[i] && str[i] != ']'; ++i)
+        if (str[i] == ',')
+            ++res.num;
+    res.lista = malloc(res.num * sizeof(char *));
+    if (!res.lista)
     {
-        formatarString(linha);  
-        adicionarPokemon(linha, &pokemons[*totalPokemons]);
-        (*totalPokemons)++;
+        int errsv = errno;
+        perror("erro");
+        exit(errsv);
     }
-
-    fclose(arquivo);
-}
-
-// Retornar o indice de um pokemon buscado por ID
-int buscarPokemonID(int id, Pokemon pokemons[], int totalPokemons)
-{
-    for (int i = 0; i < totalPokemons; i++)
+    for (int i = 0; i < res.num; ++i)
     {
-        if (pokemons[i].id == id)
+        char *habilidade;
+        int tamanho_token = 0;
+        habilidade = strtok_r(i ? NULL : str, ",]", &save);
+        if (!habilidade)
         {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-void Selecao(Pokemon pokes[801], int tam){
-    for(int i=0;i<tam;i++){
-        for(int j=0;j<tam-1;j++){
-            if(strcmp(pokes[i].name,pokes[j].name) < 0){
-                Pokemon temp = pokes[i];
-                pokes[i] = pokes[j];
-                pokes[j] = temp;
+            int errsv = errno;
+            for (int j = 0; j < i; ++j)
+            {
+                free(res.lista[j]);
             }
+            free(res.lista);
+            perror("erro");
+            exit(errsv);
         }
+        tamanho_token = strlen(habilidade);
+        res.lista[i] = malloc((tamanho_token + 1) * sizeof(char));
+        if (!res.lista[i])
+        {
+            int errsv = errno;
+            for (int j = 0; j < i; ++j)
+            {
+                free(res.lista[j]);
+            }
+            free(res.lista);
+            perror("erro");
+            exit(errsv);
+        }
+        strcpy(res.lista[i], habilidade);
     }
+    return res;
 }
 
-bool BuscaBinaria(Pokemon poke[801], char input[15],int tam){
-    int esq = 0;
-    int dir = tam-1;
-    
-    while(esq <= dir){
-        int meio = (esq + dir )/2;
-
-        if(strcmp(input,poke[meio].name) == 0){
-            return true;
-        }
-
-        if(strcmp(input,poke[meio].name) > 0 ){
-            esq = meio+1;
-        }
-
-        if(strcmp(input,poke[meio].name) < 0 ){
-            dir = meio-1;
-        }
-
-    }
-    return false;
-}
-
-int main(void)
+static tipo_pokemon tipo_de_string(const char *str)
 {
-    Pokemon pokemons[1000];
-    int totalPokemons;
+    if (!strcmp(str, "bug"))
+        return INSETO;
+    else if (!strcmp(str, "dark"))
+        return NOTURNO;
+    else if (!strcmp(str, "dragon"))
+        return DRAGAO;
+    else if (!strcmp(str, "electric"))
+        return ELETRICO;
+    else if (!strcmp(str, "fairy"))
+        return FADA;
+    else if (!strcmp(str, "fighting"))
+        return LUTADOR;
+    else if (!strcmp(str, "fire"))
+        return FOGO;
+    else if (!strcmp(str, "flying"))
+        return VOADOR;
+    else if (!strcmp(str, "ghost"))
+        return FANTASMA;
+    else if (!strcmp(str, "grass"))
+        return GRAMA;
+    else if (!strcmp(str, "ground"))
+        return TERRA;
+    else if (!strcmp(str, "ice"))
+        return GELO;
+    else if (!strcmp(str, "normal"))
+        return NORMAL;
+    else if (!strcmp(str, "poison"))
+        return VENENOSO;
+    else if (!strcmp(str, "psychic"))
+        return PSIQUICO;
+    else if (!strcmp(str, "rock"))
+        return PEDRA;
+    else if (!strcmp(str, "steel"))
+        return METAL;
+    else if (!strcmp(str, "water"))
+        return AGUA;
+    return SEM_TIPO;
+}
 
-    lerArquivo("/tmp/pokemon.csv", pokemons, &totalPokemons);
-
-    char input[15];
-    int i=0;
-    Pokemon NewPokemons[801];
-
-    while (true)
+static const char *tipo_para_string(tipo_pokemon tipo)
+{
+    switch (tipo)
     {
-        scanf(" %s", input);
-        
-        if (strcmp(input, "FIM") == 0)
-        {
-            break;
-        }
-
-        int id = atoi(input);
-        NewPokemons[i++] = pokemons[id];
-
+    case INSETO:
+        return "bug";
+    case NOTURNO:
+        return "dark";
+    case DRAGAO:
+        return "dragon";
+    case ELETRICO:
+        return "electric";
+    case FADA:
+        return "fairy";
+    case LUTADOR:
+        return "fighting";
+    case FOGO:
+        return "fire";
+    case VOADOR:
+        return "flying";
+    case FANTASMA:
+        return "ghost";
+    case GRAMA:
+        return "grass";
+    case TERRA:
+        return "ground";
+    case GELO:
+        return "ice";
+    case NORMAL:
+        return "normal";
+    case VENENOSO:
+        return "poison";
+    case PSIQUICO:
+        return "psychic";
+    case PEDRA:
+        return "rock";
+    case METAL:
+        return "steel";
+    case AGUA:
+        return "water";
+    default:
+        return "unknown";
     }
-    Selecao(NewPokemons , i);
-    
- 
+}
 
-    while (true)
+#define MAX_POKEMON 801
+
+int main(int argc, char **argv)
+{
+    FILE *csv = fopen((argc > 1) ? argv[1] : DB_PADRAO, "r");
+    Pokemon *pokemon[MAX_POKEMON] = {NULL};
+    int n = 0;
+    char *input = NULL;
+    size_t tamanho;
+
+    if (!csv)
     {
-        scanf(" %s", input);
-        
-        if (strcmp(input, "FIM") == 0)
-        {
-            break;
-        }
+        int errsv = errno;
+        perror("erro ao abrir");
+        return errsv;
+    }
 
-        bool sim = false;
-        sim = BuscaBinaria(NewPokemons,input,i);
-        if(sim){
-            printf("SIM\n");
-        }else{
-            printf("NAO\n");
+    while (fgetc(csv) != '\n')
+        ;
+
+    while (n < MAX_POKEMON && getline(&input, &tamanho, csv) != -1)
+        pokemon[n++] = pokemon_de_string(input);
+    fclose(csv);
+
+    while (getline(&input, &tamanho, stdin) != -1)
+    {
+        if (strcmp(input, "FIM\n"))
+        {
+            int idx = atoi(input) - 1;
+            if (idx > -1 && idx < n)
+                imprimir_pokemon(pokemon[idx]);
+            else
+                puts("erro");
         }
     }
-  
-        
-    return 0;
+
+    for (int i = 0; i < n; ++i)
+        liberar_pokemon(pokemon[i]);
+    free(input);
+
+    return EXIT_SUCCESS;
 }
