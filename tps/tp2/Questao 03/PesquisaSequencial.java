@@ -2,6 +2,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
@@ -143,6 +144,8 @@ class Pokemon {
 public class PesquisaSequencial {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        long startTime = System.nanoTime(); // Iniciar tempo de execução
+        int numComparacoes = 0;
 
         // Leitura dos IDs
         ArrayList<Integer> ids = new ArrayList<>();
@@ -159,21 +162,32 @@ public class PesquisaSequencial {
             System.out.println("Nenhum Pokémon encontrado.");
         } else {
             // Procurar pelos nomes fornecidos
-            if (!searchPokemonNome(pokemons, sc)) {
+            if (!searchPokemonNome(pokemons, sc, numComparacoes)) {
                 System.out.println("NAO");
             }
+        }
+
+        long endTime = System.nanoTime(); // Fim do tempo de execução
+        long executionTime = (endTime - startTime) / 1_000_000; // Convertendo para milissegundos
+
+        // Criar o arquivo de log
+        try (PrintWriter writer = new PrintWriter("848122_sequencial.txt")) {
+            writer.printf("848122\t%dms\t%d comparações\n", executionTime, numComparacoes);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         sc.close();
     }
 
     // aqui está lendo a entrada e achando o pokemon
-    public static boolean searchPokemonNome(ArrayList<Pokemon> pokemons, Scanner sc) {
+    public static boolean searchPokemonNome(ArrayList<Pokemon> pokemons, Scanner sc, int numComparacoes) {
         String nomePokemon;
         boolean foundAny = false;
         while (!(nomePokemon = sc.nextLine()).equals("FIM")) {
             boolean found = false;
             for (Pokemon pokemon : pokemons) {
+                numComparacoes++; // Incrementa o número de comparações
                 if (nomePokemon.equalsIgnoreCase(pokemon.getName())) {
                     System.out.println("SIM");
                     found = true;

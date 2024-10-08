@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Classe",
+      "request": "launch",
+      "mainClass": "Classe",
+      "projectName": "AEDS2_af65bf31"
+    },
+    {
+      "type": "java",
       "name": "QuickSortVariacoes",
       "request": "launch",
       "mainClass": "labs.lab06.QuickSortVariacoes",
