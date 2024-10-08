@@ -2,6 +2,8 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
@@ -22,7 +24,6 @@ class Pokemon {
     // MÉTODOS
 
     // Construtor
-
     public Pokemon() {
         this.id = 0;
         this.generation = 0;
@@ -37,22 +38,6 @@ class Pokemon {
         this.captureDate = null;
     }
 
-    public Pokemon(int id, int generation, String name, String description, ArrayList<String> types,
-            ArrayList<String> abilities, double weight, double height, int captureRate,
-            boolean isLegendary, Date captureDate) {
-        this.id = id;
-        this.generation = generation;
-        this.name = name;
-        this.description = description;
-        this.types = types;
-        this.abilities = abilities;
-        this.weight = weight;
-        this.height = height;
-        this.captureRate = captureRate;
-        this.isLegendary = isLegendary;
-        this.captureDate = captureDate;
-    }
-
     public Pokemon(String[] infos) throws Exception {
         for (int i = 0; i < infos.length; i++)
             if (infos[i].isEmpty())
@@ -62,15 +47,11 @@ class Pokemon {
         this.name = infos[2];
         this.description = infos[3];
         this.types = new ArrayList<>();
-        infos[4] = "'" + infos[4] + "'";
-        this.types.add(infos[4]);
+        this.types.add("'" + infos[4] + "'");
         if (!infos[5].equals("0")) {
-            infos[5] = "'" + infos[5].trim() + "'";
-            this.types.add(infos[5]);
+            this.types.add("'" + infos[5].trim() + "'");
         }
-        infos[6] = infos[6].replace("\"", "");
-        infos[6] = infos[6].replace("[", "");
-        infos[6] = infos[6].replace("]", "");
+        infos[6] = infos[6].replace("\"", "").replace("[", "").replace("]", "");
         String[] tmp = infos[6].split(",");
         this.abilities = new ArrayList<>();
         for (String s : tmp)
@@ -92,106 +73,12 @@ class Pokemon {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getGeneration() {
-        return generation;
-    }
-
-    public void setGeneration(int generation) {
-        this.generation = generation;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ArrayList<String> getTypes() {
-        return types;
-    }
-
-    public void setTypes(ArrayList<String> types) {
-        this.types = types != null ? types : new ArrayList<>();
-    }
-
-    public ArrayList<String> getAbilities() {
-        return abilities;
-    }
-
-    public void setAbilities(ArrayList<String> abilities) {
-        this.abilities = abilities != null ? abilities : new ArrayList<>();
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
     public double getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
-    public int getCaptureRate() {
-        return captureRate;
-    }
-
-    public void setCaptureRate(int captureRate) {
-        this.captureRate = captureRate;
-    }
-
-    public boolean isLegendary() {
-        return isLegendary;
-    }
-
-    public void setLegendary(boolean isLegendary) {
-        this.isLegendary = isLegendary;
-    }
-
-    public Date getCaptureDate() {
-        return captureDate;
-    }
-
-    public void setCaptureDate(Date captureDate) {
-        this.captureDate = captureDate;
-    }
-
-    // Clone
-    public Pokemon clone() {
-        Pokemon clone = new Pokemon();
-
-        clone.id = this.id;
-        clone.generation = this.generation;
-        clone.name = this.name;
-        clone.description = this.description;
-        clone.types = new ArrayList<>(this.types);
-        clone.abilities = new ArrayList<>(this.abilities);
-        clone.weight = this.weight;
-        clone.height = this.height;
-        clone.captureRate = this.captureRate;
-        clone.isLegendary = this.isLegendary;
-        clone.captureDate = this.captureDate;
-        return clone;
+    public String getName() {
+        return name;
     }
 
     // leitura do csv
@@ -202,7 +89,7 @@ class Pokemon {
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(csvFile));
-            br.readLine(); 
+            br.readLine(); // Ignora cabeçalho
 
             while ((linha = br.readLine()) != null) {
                 if (linha.equals("FIM")) {
@@ -210,7 +97,6 @@ class Pokemon {
                 }
 
                 linha = formatar(linha);
-
                 Pokemon pokemon = new Pokemon(linha.split(";"));
                 pokemons.add(pokemon);
             }
@@ -233,7 +119,6 @@ class Pokemon {
                 " - " + generation + " gen] - " + formattedDate;
     }
 
-    // aqui a string está sendo tratada
     private static String formatar(String linha) {
         boolean in_list = false;
         StringBuilder str = new StringBuilder(linha);
@@ -251,7 +136,6 @@ class Pokemon {
 public class Heapsort {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
-        
         ArrayList<Pokemon> pokemons = pokemonManager.Ler();
         ArrayList<Pokemon> pokemonsOrdenados = new ArrayList<>();
 
@@ -259,67 +143,86 @@ public class Heapsort {
             System.out.println("Nenhum Pokémon encontrado.");
         } else {
             searchPokemonId(pokemons, pokemonsOrdenados);
-            ordenar(pokemonsOrdenados);
+
+            // Inicializando contadores
+            int comparacoes = 0;
+            int movimentacoes = 0;
+
+            long inicio = System.currentTimeMillis(); // Início do tempo de execução
+
+            ordenar(pokemonsOrdenados, comparacoes, movimentacoes);
+
+            long fim = System.currentTimeMillis(); // Fim do tempo de execução
+            long tempoExecucao = fim - inicio; // Tempo em milissegundos
+
             for (Pokemon pokemon : pokemonsOrdenados) {
                 System.out.println(pokemon);
             }
+
+            // Escrever o arquivo de log
+            escreverLog(tempoExecucao, comparacoes, movimentacoes);
         }
     }
 
-    // ordenar utilizando HeapSort 
-    public static void ordenar(ArrayList<Pokemon> pokemons) {
+    // Ordenar utilizando HeapSort
+    public static void ordenar(ArrayList<Pokemon> pokemons, int comparacoes, int movimentacoes) {
         int n = pokemons.size();
 
         for (int i = n / 2 - 1; i >= 0; i--) {
-            heapify(pokemons, n, i);
+            heapify(pokemons, n, i, comparacoes, movimentacoes);
         }
 
         for (int i = n - 1; i > 0; i--) {
             Pokemon temp = pokemons.get(0);
             pokemons.set(0, pokemons.get(i));
             pokemons.set(i, temp);
-            heapify(pokemons, i, 0);
+            movimentacoes++; // Conta a movimentação
+
+            heapify(pokemons, i, 0, comparacoes, movimentacoes);
         }
 
-        for(int i=0; i<n; i++) {
-            for(int j=0; j<n; j++) {
-                if(pokemons.get(i).getHeight() == pokemons.get(j).getHeight()) {
-                    if(pokemons.get(i).getName().compareTo(pokemons.get(j).getName()) < 0) {
+        // Comparação adicional para ordenar alfabeticamente Pokémon de mesma altura
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                comparacoes++; // Comparação entre alturas
+                if (pokemons.get(i).getHeight() == pokemons.get(j).getHeight()) {
+                    if (pokemons.get(i).getName().compareTo(pokemons.get(j).getName()) < 0) {
                         Pokemon temporario = pokemons.get(i);
                         pokemons.set(i, pokemons.get(j));
                         pokemons.set(j, temporario);
+                        movimentacoes++; // Conta a movimentação
                     }
                 }
             }
         }
     }
 
-    
-    private static void heapify(ArrayList<Pokemon> pokemons, int n, int i) {
-        int largest = i; 
-        int left = 2 * i + 1; 
-        int right = 2 * i + 2; 
+    // Método heapify com contadores de comparações e movimentações
+    private static void heapify(ArrayList<Pokemon> pokemons, int n, int i, int comparacoes, int movimentacoes) {
+        int largest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
 
-        
+        comparacoes++; // Comparação entre o nó atual e o filho esquerdo
         if (left < n && pokemons.get(left).getHeight() > pokemons.get(largest).getHeight()) {
             largest = left;
         }
 
-        
+        comparacoes++; // Comparação entre o nó atual e o filho direito
         if (right < n && pokemons.get(right).getHeight() > pokemons.get(largest).getHeight()) {
             largest = right;
         }
 
-       
         if (largest != i) {
             Pokemon swap = pokemons.get(i);
             pokemons.set(i, pokemons.get(largest));
             pokemons.set(largest, swap);
-            heapify(pokemons, n, largest);
+            movimentacoes++; // Conta a movimentação
+            heapify(pokemons, n, largest, comparacoes, movimentacoes);
         }
     }
 
-    // aqui está lendo a entrada e achando o pokemon
+    // Método para ler a entrada e encontrar os Pokémon pelo ID
     public static void searchPokemonId(ArrayList<Pokemon> pokemons, ArrayList<Pokemon> pokemonsOrdenados) {
         Scanner sc = new Scanner(System.in);
         String resp;
@@ -332,5 +235,14 @@ public class Heapsort {
             }
         }
         sc.close();
+    }
+
+    // Escrever o arquivo de log
+    public static void escreverLog(long tempoExecucao, int comparacoes, int movimentacoes) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("848122_heapsort.txt"))) {
+            writer.printf("848122\t%dms\t%d comparacoes\t%d movimentacoes\n", tempoExecucao, comparacoes, movimentacoes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
