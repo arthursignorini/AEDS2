@@ -192,29 +192,27 @@ void ler_pokemon(Pokemon *restrict p, char *str) {
   p->data_captura.ano = atoi(strtok_r(NULL, "/\n\r", &save));
 }
 
-// Função de ordenação por Bubble Sort, utilizando id como chave e nome em caso de empate
-void bubble_sort(Pokemon *pokemons[], int n)
+// Função de ordenação por Shell Sort, utilizando peso como chave e nome em caso de empate
+void shell_sort(Pokemon *pokemons[], int n)
 {
-    bool trocado;
-    do
+    // Gera a sequência de espaçamentos (gap)
+    for (int gap = n / 2; gap > 0; gap /= 2)
     {
-        trocado = false;
-        for (int i = 0; i < n - 1; i++)
+        for (int i = gap; i < n; i++)
         {
-            // Compara com base no id, e em caso de empate, pelo nome
-            if (pokemons[i]->id > pokemons[i + 1]->id ||
-                (pokemons[i]->id == pokemons[i + 1]->id && strcmp(pokemons[i]->nome, pokemons[i + 1]->nome) > 0))
+            Pokemon *temp = pokemons[i];
+            int j;
+            // Compara com base no peso, e em caso de empate, pelo nome
+            for (j = i; j >= gap && 
+                (pokemons[j - gap]->peso > temp->peso || 
+                (pokemons[j - gap]->peso == temp->peso && strcmp(pokemons[j - gap]->nome, temp->nome) > 0)); j -= gap)
             {
-                // Troca os Pokémon de posição
-                Pokemon *temp = pokemons[i];
-                pokemons[i] = pokemons[i + 1];
-                pokemons[i + 1] = temp;
-                trocado = true;
+                pokemons[j] = pokemons[j - gap];
             }
+            pokemons[j] = temp;
         }
-    } while (trocado);
+    }
 }
-
 
 
 void imprimir_pokemon(Pokemon *restrict const p) {
@@ -404,8 +402,8 @@ int main(int argc, char **argv) {
     }
   }
 
-  // Ordena os Pokémon pelo id e nome usando Bubble Sort
-  bubble_sort(lista, contador);
+  // Ordena os Pokémon pelo peso e nome usando Shell Sort
+  shell_sort(lista, contador);
 
 
   // Imprime os Pokémon ordenados
