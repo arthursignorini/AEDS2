@@ -2,6 +2,8 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
@@ -68,9 +70,7 @@ class Pokemon {
             infos[5] = "'" + infos[5].trim() + "'";
             this.types.add(infos[5]);
         }
-        infos[6] = infos[6].replace("\"", "");
-        infos[6] = infos[6].replace("[", "");
-        infos[6] = infos[6].replace("]", "");
+        infos[6] = infos[6].replace("\"", "").replace("[", "").replace("]", "");
         String[] tmp = infos[6].split(",");
         this.abilities = new ArrayList<>();
         for (String s : tmp)
@@ -202,7 +202,7 @@ class Pokemon {
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(csvFile));
-            br.readLine(); 
+            br.readLine(); // Ignora o cabeçalho
 
             while ((linha = br.readLine()) != null) {
                 if (linha.equals("FIM")) {
@@ -251,7 +251,7 @@ class Pokemon {
 public class Selecao {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
-        
+
         ArrayList<Pokemon> pokemons = pokemonManager.Ler();
         ArrayList<Pokemon> pokemonsOrdenados = new ArrayList<>();
 
@@ -259,27 +259,43 @@ public class Selecao {
             System.out.println("Nenhum Pokémon encontrado.");
         } else {
             searchPokemonId(pokemons, pokemonsOrdenados);
-            ordenar(pokemonsOrdenados);
-            for(int i=0; i<pokemonsOrdenados.size(); i++) {
-                System.out.println(pokemonsOrdenados.get(i));
+            int[] stats = ordenar(pokemonsOrdenados);
+            writeLog(stats);
+            for (Pokemon pokemon : pokemonsOrdenados) {
+                System.out.println(pokemon);
             }
         }
     }
 
     // ordenar 
-    public static void ordenar(ArrayList<Pokemon> pokemons) {
+    public static int[] ordenar(ArrayList<Pokemon> pokemons) {
+        int comparacoes = 0;
+        int movimentacoes = 0;
+
+        long startTime = System.nanoTime();
+
         for (int i = 0; i < pokemons.size() - 1; i++) {
             int indexMenor = i;
             for (int j = i + 1; j < pokemons.size(); j++) {
+                comparacoes++;
                 if (pokemons.get(j).getName().compareToIgnoreCase(pokemons.get(indexMenor).getName()) < 0) {
                     indexMenor = j;
                 }
             }
-            // Troca
-            Pokemon temp = pokemons.get(indexMenor);
-            pokemons.set(indexMenor, pokemons.get(i));
-            pokemons.set(i, temp);
+            if (indexMenor != i) {
+                // Troca
+                Pokemon temp = pokemons.get(indexMenor);
+                pokemons.set(indexMenor, pokemons.get(i));
+                pokemons.set(i, temp);
+                movimentacoes += 3; // Troca envolve 3 movimentações
+            }
         }
+
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime;
+
+        // Retorna comparações, movimentações e tempo de execução
+        return new int[] { comparacoes, movimentacoes, (int) duration };
     }
 
     // aqui está lendo a entrada e achando o pokemon
@@ -295,5 +311,15 @@ public class Selecao {
             }
         }
         sc.close();
+    }
+
+    // Método para escrever o log em um arquivo
+    private static void writeLog(int[] stats) {
+        String matricula = "848122"; // Substitua pelo seu número de matrícula
+        try (PrintWriter writer = new PrintWriter(new FileWriter("848122_selecao.txt"))) {
+            writer.println(matricula + "\t" + stats[0] + "\t" + stats[1] + "\t" + (stats[2] / 1_000_000) + " ms");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

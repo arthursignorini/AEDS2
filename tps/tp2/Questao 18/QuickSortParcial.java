@@ -278,40 +278,45 @@ public class QuickSortParcial {
 
     // ordenar 
     public static int[] ordenar(ArrayList<Pokemon> pokemons, int esq, int dir) {
-        int comparacoes = 0;
-        int movimentacoes = 0;
+        int comparacoes = 0; // Contador de comparações
+        int movimentacoes = 0; // Contador de movimentações
         if (esq < dir) {
             int i = esq;
             int j = dir;
             Pokemon pivo = pokemons.get((esq + dir) / 2);
-
+    
             while (i <= j) {
                 while ((pokemons.get(i).getGeneration() < pivo.getGeneration()) ||
                        (pokemons.get(i).getGeneration() == pivo.getGeneration() && 
                         pokemons.get(i).getName().compareTo(pivo.getName()) < 0)) {
                     i++;
+                    comparacoes++; // Incrementa a contagem de comparações
                 }
                 while ((pokemons.get(j).getGeneration() > pivo.getGeneration()) ||
                        (pokemons.get(j).getGeneration() == pivo.getGeneration() && 
                         pokemons.get(j).getName().compareTo(pivo.getName()) > 0)) {
                     j--;
+                    comparacoes++; // Incrementa a contagem de comparações
                 }
                 if (i <= j) {
                     // Troca
                     Pokemon temp = pokemons.get(i);
                     pokemons.set(i, pokemons.get(j));
                     pokemons.set(j, temp);
+                    movimentacoes += 2; // Duas movimentações (um para cada Pokémon)
                     i++;
                     j--;
                 }
             }
             // Recursão
-            ordenar(pokemons, esq, j);
-            ordenar(pokemons, i, dir);
+            int[] statsLeft = ordenar(pokemons, esq, j);
+            int[] statsRight = ordenar(pokemons, i, dir);
+            comparacoes += statsLeft[0] + statsRight[0]; // Soma as comparações das chamadas recursivas
+            movimentacoes += statsLeft[1] + statsRight[1]; // Soma as movimentações das chamadas recursivas
         }
         return new int[]{comparacoes, movimentacoes};
     }
-
+    
     // aqui está lendo a entrada e achando o pokemon
     public static void searchPokemonId(ArrayList<Pokemon> pokemons, ArrayList<Pokemon> pokemonsOrdenados) {
         Scanner sc = new Scanner(System.in);
