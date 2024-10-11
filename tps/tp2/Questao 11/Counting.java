@@ -164,47 +164,50 @@ public class Counting {
         }
     }
 
-    // Ordenar utilizando Counting Sort com desempate por nome
-public static ArrayList<Pokemon> countingSort(ArrayList<Pokemon> pokemons, int comparacoes, int movimentacoes) {
+ // Ordenar utilizando Counting Sort com desempate por nome
+ public static ArrayList<Pokemon> countingSort(ArrayList<Pokemon> pokemons, int comparacoes, int movimentacoes) {
     int maxCaptureRate = getMaxCaptureRate(pokemons);
     int[] countArray = new int[maxCaptureRate + 1];
-    Pokemon[] sortedPokemons = new Pokemon[pokemons.size()]; // Inicializar o array com tamanho correto
+    ArrayList<ArrayList<Pokemon>> buckets = new ArrayList<>(maxCaptureRate + 1);
 
-    // Contagem dos captureRates
+    // Arrays para armazenar as comparações e movimentações, pois são efetivamente finais
+    int[] comparacoesArray = {comparacoes};
+    int[] movimentacoesArray = {movimentacoes};
+
+    // Inicializar as listas de buckets para cada valor de captureRate
+    for (int i = 0; i <= maxCaptureRate; i++) {
+        buckets.add(new ArrayList<>());
+    }
+
+    // Preencher os buckets com os Pokémon de acordo com seu captureRate
     for (Pokemon pokemon : pokemons) {
-        countArray[pokemon.getCaptureRate()]++;
+        buckets.get(pokemon.getCaptureRate()).add(pokemon);
     }
 
-    // Acumular os valores de contagem
-    for (int i = 1; i <= maxCaptureRate; i++) {
-        countArray[i] += countArray[i - 1];
+    // Ordenar cada bucket individualmente por nome usando a comparação de strings
+    for (ArrayList<Pokemon> bucket : buckets) {
+        bucket.sort((p1, p2) -> {
+            comparacoesArray[0]++; // Contar a comparação
+            return p1.getName().compareTo(p2.getName());
+        });
     }
 
-    // Ordenar os Pokémon
-    for (int i = pokemons.size() - 1; i >= 0; i--) {
-        Pokemon pokemon = pokemons.get(i);
-        int posicao = countArray[pokemon.getCaptureRate()] - 1;
-        
-        // Caso a posição já tenha um Pokémon com o mesmo captureRate, faz o desempate por nome
-        while (sortedPokemons[posicao] != null && 
-               sortedPokemons[posicao].getCaptureRate() == pokemon.getCaptureRate() &&
-               sortedPokemons[posicao].getName().compareTo(pokemon.getName()) < 0) {
-            posicao--; // Mover para posição anterior se necessário
-        }
-        
-        sortedPokemons[posicao] = pokemon;
-        countArray[pokemon.getCaptureRate()]--;
-        movimentacoes++; // Conta a movimentação
-    }
-
-    // Converter o array de volta para ArrayList
+    // Reunir os Pokémon ordenados a partir dos buckets
     ArrayList<Pokemon> sortedList = new ArrayList<>();
-    for (Pokemon pokemon : sortedPokemons) {
-        sortedList.add(pokemon);
+    for (ArrayList<Pokemon> bucket : buckets) {
+        for (Pokemon pokemon : bucket) {
+            sortedList.add(pokemon);
+            movimentacoesArray[0]++; // Contar a movimentação
+        }
     }
+
+    // Atualizar os contadores finais
+    comparacoes = comparacoesArray[0];
+    movimentacoes = movimentacoesArray[0];
 
     return sortedList;
 }
+
 
     // Método para obter o valor máximo do captureRate
     public static int getMaxCaptureRate(ArrayList<Pokemon> pokemons) {
