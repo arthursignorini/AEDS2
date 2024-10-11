@@ -188,7 +188,7 @@ public static ArrayList<Pokemon> countingSort(ArrayList<Pokemon> pokemons, int c
         // Caso a posição já tenha um Pokémon com o mesmo captureRate, faz o desempate por nome
         while (sortedPokemons[posicao] != null && 
                sortedPokemons[posicao].getCaptureRate() == pokemon.getCaptureRate() &&
-               sortedPokemons[posicao].getName().compareTo(pokemon.getName()) > 0) {
+               sortedPokemons[posicao].getName().compareTo(pokemon.getName()) < 0) {
             posicao--; // Mover para posição anterior se necessário
         }
         
