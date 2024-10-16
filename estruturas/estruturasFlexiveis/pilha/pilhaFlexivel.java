@@ -34,7 +34,8 @@ public class pilhaFlexivel {
                     System.out.println("Operação não é válida");
                     break;
             }
-        }  
+        }
+        sc.close();  
     }
 }
 
@@ -69,9 +70,9 @@ class Pilha {
         }
 
         int elemento = topo.elemento;
-        Celula tmp = topo;
+        // Celula tmp = topo; isso seria para retirar a celula da pilha
         topo = topo.prox;
-        tmp = null; 
+        // tmp = null; 
 
         return elemento;
     }

@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ex3",
+      "request": "launch",
+      "mainClass": "estruturasFlexiveis.exercicios.ex3",
+      "projectName": "AEDS2_619956aa"
+    },
+    {
+      "type": "java",
       "name": "ex1",
       "request": "launch",
       "mainClass": "estruturasFlexiveis.exercicios.ex1",
