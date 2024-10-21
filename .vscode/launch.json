@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "FilaFlexivelSlides",
+      "request": "launch",
+      "mainClass": "estruturasFlexiveis.exercicios.FilaFlexivelSlides",
+      "projectName": "AEDS2_af65bf31"
+    },
+    {
+      "type": "java",
       "name": "ex4",
       "request": "launch",
       "mainClass": "estruturasFlexiveis.exercicios.ex4",
