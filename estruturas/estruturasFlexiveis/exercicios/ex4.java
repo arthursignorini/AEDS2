@@ -1,48 +1,27 @@
 package estruturasFlexiveis.exercicios;
 
 public class ex4 {
-    public static void main(String[]args) {
+    public static void main(String[] args) {
         try {
             Lista lista = new Lista();
 
             // Inserções no início da lista
-            lista.inserirInicio(10);
+            lista.inserirInicio(50);
             lista.inserirInicio(20);
             lista.inserirInicio(30);
-
-            // Exibe a lista antes de qualquer remoção
-            System.out.print("Lista antes da remoção: ");
             lista.mostrar();
 
-            // Remove o primeiro elemento
-            lista.removerInicio();
-            System.out.print("\nLista após a remoção no início: ");
+            lista.ordenar();
             lista.mostrar();
-
-            // Insere no fim da lista
-            lista.inserirFim(40);
-            System.out.print("\nLista após inserir no fim: ");
-            lista.mostrar();
-
-            // Remove o último elemento
+            lista.quantidadeTermos();
             lista.removerFim();
-            System.out.print("\nLista após a remoção no fim: ");
+            lista.mostrar();
+            lista.quantidadeTermos();
+            lista.inserirNoCabeca(2);
             lista.mostrar();
 
-            // Insere alguns elementos adicionais
-            lista.inserirFim(50);
-            lista.inserirFim(60);
-            lista.inserir(25, 1); // Inserir na posição 1 (entre 20 e 10)
-            System.out.print("\nLista após inserção intermediária (25 na posição 1): ");
-            lista.mostrar();
-
-            // Remove da posição intermediária
-            lista.remover(1);
-            System.out.print("\nLista após remover da posição 1: ");
-            lista.mostrar();
-            
         } catch (Exception e) {
-            System.out.println(e.getMessage()); 
+            System.out.println(e.getMessage());
         }
     }
 }
@@ -66,6 +45,7 @@ class Celula {
 class Lista {
     Celula primeiro;
     Celula ultimo;
+    int cont;
 
     Lista() {
         primeiro = ultimo = new Celula();
@@ -75,39 +55,43 @@ class Lista {
         Celula temp = new Celula(x);
         temp.prox = primeiro.prox;
         primeiro.prox = temp;
-        if(primeiro == ultimo) {
+        if (primeiro == ultimo) {
             ultimo = temp;
         }
         temp = null;
+        cont++;
     }
 
     void inserirFim(int x) {
         ultimo.prox = new Celula(x);
         ultimo = ultimo.prox;
-    } 
+        cont++;
+    }
 
     void inserir(int x, int pos) throws Exception {
         int tam = tamanho();
-        if(pos < 0 || pos > tam) {
-            throw new Exception ("Posicao invalida");
+        if (pos < 0 || pos > tam) {
+            throw new Exception("Posicao invalida");
         }
-        if(pos == 0) {
+        if (pos == 0) {
             inserirInicio(x);
-        } else if(pos == tam) {
+        } else if (pos == tam) {
             inserirFim(x);
         } else {
-            Celula i=primeiro;
-            for(int j=0; j<pos; j++, i=i.prox);
+            Celula i = primeiro;
+            for (int j = 0; j < pos; j++, i = i.prox);
             Celula temp = new Celula(x);
             temp.prox = i.prox;
             i.prox = temp;
             i = temp = null;
+            cont++;
         }
-        
+
     }
-    
+
     void mostrar() {
-        for(Celula i=primeiro.prox; i!=null; i=i.prox) { 
+        System.out.println();
+        for (Celula i = primeiro.prox; i != null; i = i.prox) {
             System.out.print(i.elemento + " ");
         }
     }
@@ -115,7 +99,8 @@ class Lista {
     int tamanho() {
         Celula i;
         int cont = 0;
-        for(i=primeiro.prox; i!=null; i=i.prox,cont++); 
+        for (i = primeiro.prox; i != null; i = i.prox, cont++)
+            ;
         return cont;
     }
 
@@ -123,53 +108,85 @@ class Lista {
     // ENTAO DEVO USAR O I ATÉ ELE SER NULL
 
     int removerInicio() throws Exception {
-        if(primeiro == ultimo) {
-            throw new Exception ("LISTA VAZIA");
+        if (primeiro == ultimo) {
+            throw new Exception("LISTA VAZIA");
         }
         int elemento = primeiro.prox.elemento;
         Celula temp = primeiro.prox;
         primeiro.prox = temp.prox;
-        if(temp == ultimo) {
+        if (temp == ultimo) {
             ultimo = primeiro;
         }
         temp.prox = null;
         temp = null;
+        cont--;
         return elemento;
     }
 
     int removerFim() throws Exception {
-        if(primeiro == ultimo) {
-            throw new Exception ("LISTA VAIZA");
+        if (primeiro == ultimo) {
+            throw new Exception("LISTA VAIZA");
         }
         Celula i;
-        for(i=primeiro.prox; i.prox !=ultimo; i=i.prox);
+        for (i = primeiro.prox; i.prox != ultimo; i = i.prox)
+            ;
         Celula temp = i.prox;
         int elemento = temp.elemento;
         ultimo = i;
         i.prox = null;
+        cont--;
         return elemento;
     }
 
     int remover(int pos) throws Exception {
         int tam = tamanho();
-        if(primeiro == ultimo) {
-            throw new Exception ("LISTA VAIZA");
+        if (primeiro == ultimo) {
+            throw new Exception("LISTA VAIZA");
         }
-        if(pos < 0 || pos >= tam) {
-            throw new Exception ("POSICAO INVALIDA");
+        if (pos < 0 || pos >= tam) {
+            throw new Exception("POSICAO INVALIDA");
         }
-        if(pos == 0) {
+        if (pos == 0) {
             removerInicio();
         }
-        if(pos == tam-1){
+        if (pos == tam - 1) {
             removerFim();
         }
-        Celula i=primeiro;
-        for(int j=0; j<pos; j++, i=i.prox);
+        Celula i = primeiro;
+        for (int j = 0; j < pos; j++, i = i.prox)
+            ;
         Celula temp = i.prox;
         int elemento = temp.elemento;
         i.prox = temp.prox;
         temp.prox = null;
+        cont--;
         return elemento;
+    }
+
+    void ordenar () throws Exception {
+       if(primeiro == ultimo) {
+            throw new Exception("VAZIA");
+       }
+
+       for(Celula i=primeiro.prox; i!= null; i=i.prox) {
+            for(Celula j=i.prox; j!=null; j=j.prox){
+                if(i.elemento > j.elemento) {
+                    int temp = i.elemento;
+                    i.elemento = j.elemento;
+                    j.elemento = temp;
+                }
+            }
+       }
+    }
+
+    void quantidadeTermos() {
+        System.out.println("\nQuantidade de elementos na lista: " + cont);
+    }
+
+    void inserirNoCabeca(int x) {
+        primeiro.elemento = x;
+        Celula nova = new Celula();
+        nova.prox = primeiro;
+        primeiro = nova;
     }
 }
