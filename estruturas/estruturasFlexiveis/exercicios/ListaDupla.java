@@ -1,8 +1,19 @@
 package estruturasFlexiveis.exercicios;
 
 public class ListaDupla {
-    public static void main(String[] args) {
-        
+    public static void main(String[] args) throws Exception {
+        LinkedList listaDupla = new LinkedList();
+        listaDupla.inserirInicio(2);
+        listaDupla.inserirInicio(3);
+        listaDupla.inserirInicio(4);
+        listaDupla.mostrar();
+        listaDupla.inserirFim(10);
+        listaDupla.inserirFim(20);
+        listaDupla.mostrar();
+        listaDupla.removerInicio();
+        listaDupla.mostrar();
+        listaDupla.removerFim();
+        listaDupla.mostrar();
     }
 }
 
@@ -15,7 +26,7 @@ class CelulaDupla {
     }
 
     CelulaDupla (int x) {
-        int elemento = x;
+        elemento = x;
         ant = prox = null;
     }
 }
@@ -47,14 +58,61 @@ class LinkedList {
         ultimo = ultimo.prox;
     }
 
-    void removerInicio () throws Exception {
+    int removerInicio () throws Exception {
         if(primeiro == ultimo) {
             throw new Exception("LISTA VAZIA");
         }
-        CelulaDupla temp = primeiro;
-        primeiro = primeiro.prox;
-        int elemento = primeiro.elemento;
-        temp.prox = null;
-        // PRECISO DESENHAR
+        CelulaDupla temp = primeiro.prox;
+        int elemento = temp.elemento;
+        primeiro.prox = temp.prox;
+        temp.prox.ant = primeiro;
+        temp.ant = temp.prox = null;
+        temp = null;
+        return elemento;
+    }
+
+    int removerFim() throws Exception {
+        if(primeiro == ultimo) {
+            throw new Exception ("LISTA VAZIA");
+        }
+        int elemento = ultimo.elemento;
+        CelulaDupla temp = ultimo.ant;
+        temp.prox = ultimo.prox;
+        ultimo.ant = null;
+        ultimo = temp;
+        temp = null;
+        return elemento;
+    } 
+
+    void mostrar() {
+        System.out.println();
+        CelulaDupla i;
+        for(i=primeiro.prox; i!=null;i=i.prox) {
+            System.out.print(i.elemento + " ");
+        }
+    }
+
+    void inserir (int x, int pos) throws Exception {
+        int tam = tamanho();
+        if(pos > tam || pos < 0) {
+            throw new Exception ("POSICAO INVALIDA");
+        }
+        CelulaDupla i = primeiro;
+        for(int j =0; j<pos; j++,i=i.prox);
+        CelulaDupla temp = new CelulaDupla(x);
+        temp.ant = i;
+        temp.prox = i.prox;
+        i.prox.ant = temp;
+        i.prox = temp;
+        // ainda nao acabou
+        
+    }
+
+    int tamanho() {
+        int cont = 0;
+        for(CelulaDupla i=primeiro.prox; i!=null;i=i.prox) {
+            cont++; 
+        }
+        return cont;
     }
 }
