@@ -3,22 +3,16 @@ package estruturasFlexiveis.exercicios;
 public class ListaDupla {
     public static void main(String[] args) throws Exception {
         LinkedList listaDupla = new LinkedList();
+        listaDupla.inserirInicio(1);
+        listaDupla.inserirInicio(7);
         listaDupla.inserirInicio(2);
-        listaDupla.inserirInicio(3);
         listaDupla.inserirInicio(4);
+        listaDupla.inserirInicio(8);
         listaDupla.mostrar();
-        listaDupla.inserirFim(10);
-        listaDupla.inserirFim(20);
+        listaDupla.inverter();
         listaDupla.mostrar();
-        listaDupla.removerInicio();
-        listaDupla.mostrar();
-        listaDupla.removerFim();
-        listaDupla.mostrar();
-        listaDupla.inserir(17, 2);
-        listaDupla.mostrar();
-        listaDupla.inserir(13, 2);
-        listaDupla.mostrar();
-        listaDupla.remover(1);
+        // listaDupla.shellSort();
+        listaDupla.quickSort();
         listaDupla.mostrar();
     }
 }
@@ -150,4 +144,77 @@ class LinkedList {
         }
         return cont;
     }
+
+    void inverter() {
+        CelulaDupla anterior = null;
+        CelulaDupla atual = primeiro.prox;
+        CelulaDupla proximo = null;
+        ultimo = primeiro.prox;
+
+        while(atual != null) {
+            proximo = atual.prox;
+            atual.prox = anterior;
+            anterior = atual;
+            atual = proximo;
+        }
+        primeiro.prox = anterior;
+    }
+
+    void shellSort () {
+        int tam = tamanho();
+        for(int gap =tam/2; gap > 0; gap/=2) {
+            for(int i=gap; i<tam; i++){
+                CelulaDupla atual = getCelula(i);
+                int elemento = atual.elemento;
+
+                int j=i;
+                while(j>= gap && getCelula(j-gap).elemento > elemento) {
+                    getCelula(j).elemento = getCelula(j-gap).elemento;
+                    j-=gap;
+                }
+                getCelula(j).elemento = elemento;
+            }
+        }
+    }
+
+    CelulaDupla getCelula(int pos) {
+        CelulaDupla atual = primeiro.prox;
+        for(int i=0; i<pos && atual != null; i++, atual=atual.prox);
+        return atual;
+    }
+
+    void quickSort() {
+        if(primeiro != ultimo) {
+            quickSort(primeiro.prox, ultimo);
+        }
+    }
+
+    void quickSort(CelulaDupla inicio, CelulaDupla fim) {
+        if(inicio != null && fim != null && inicio != fim && inicio != fim.prox) {
+            CelulaDupla pivo = particao(inicio, fim);
+            quickSort(inicio, pivo.ant);
+            quickSort(pivo.prox, fim);
+        }
+    }
+
+    CelulaDupla particao (CelulaDupla inicio, CelulaDupla fim) {
+        int pivoValor = fim.elemento;
+        CelulaDupla i = inicio;
+
+        for(CelulaDupla j=inicio; j!=fim; j=j.prox) {
+            if(j.elemento <= pivoValor) {
+                int temp = i.elemento;
+                i.elemento = j.elemento;
+                j.elemento = temp;
+                i=i.prox;
+            }
+        }
+
+        int temp = i.elemento;
+        i.elemento = fim.elemento;
+        fim.elemento = temp;
+
+        return i;
+    }
+    
 }

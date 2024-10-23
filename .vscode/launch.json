@@ -3,6 +3,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ex4",
+      "request": "launch",
+      "mainClass": "estruturasFlexiveis.exercicios.ex4",
+      "projectName": "AEDS2_619956aa"
+    },
+    {
+      "type": "java",
+      "name": "ListaDupla",
+      "request": "launch",
+      "mainClass": "estruturasFlexiveis.exercicios.ListaDupla",
+      "projectName": "AEDS2_619956aa"
+    },
+    {
+      "type": "java",
       "name": "ListaDupla",
       "request": "launch",
       "mainClass": "estruturasFlexiveis.exercicios.ListaDupla",

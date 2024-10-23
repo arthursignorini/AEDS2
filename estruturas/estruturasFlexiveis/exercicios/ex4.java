@@ -9,6 +9,9 @@ public class ex4 {
             lista.inserirInicio(50);
             lista.inserirInicio(20);
             lista.inserirInicio(30);
+            lista.inserirInicio(32);
+            lista.inserirInicio(9);
+            lista.inserirInicio(8);
             lista.mostrar();
 
             lista.ordenar();
@@ -18,6 +21,11 @@ public class ex4 {
             lista.mostrar();
             lista.quantidadeTermos();
             lista.inserirNoCabeca(2);
+            lista.mostrar();
+            lista.inverter();
+            lista.mostrar();
+            // lista.shellSort();
+            lista.quickSort();
             lista.mostrar();
 
         } catch (Exception e) {
@@ -188,5 +196,87 @@ class Lista {
         Celula nova = new Celula();
         nova.prox = primeiro;
         primeiro = nova;
+    }
+
+    void inverter () {
+        Celula anterior = null;
+        Celula atual = primeiro.prox;
+        Celula proximo = null;
+        ultimo = primeiro.prox;
+
+        while(atual!=null) {
+            proximo = atual.prox;
+            atual.prox = anterior;
+            anterior = atual;
+            atual = proximo;
+        }
+        primeiro.prox = anterior;
+    }
+
+    void shellSort() {
+        // Contar o número de elementos na lista
+        int tamanho = tamanho();
+        
+        // Definir o gap inicial
+        for (int gap = tamanho / 2; gap > 0; gap /= 2) {
+            // Percorrer a lista a partir do gap
+            for (int i = gap; i < tamanho; i++) {
+                // Encontre o i-ésimo elemento da lista
+                Celula atual = getCelula(i);
+                int valorAtual = atual.elemento;
+    
+                // Mover o valor maior de trás para frente
+                int j = i;
+                while (j >= gap && getCelula(j - gap).elemento > valorAtual) {
+                    getCelula(j).elemento = getCelula(j - gap).elemento;
+                    j -= gap;
+                }
+                // Colocar o valor atual na posição correta
+                getCelula(j).elemento = valorAtual;
+            }
+        }
+    }
+    
+    Celula getCelula(int pos) {
+        Celula atual = primeiro.prox;
+        for (int i = 0; i < pos && atual != null; i++) {
+            atual = atual.prox;
+        }
+        return atual;
+    }
+
+    void quickSort(Celula inicio, Celula fim) {
+        if (inicio != null && fim != null && inicio != fim && inicio != fim.prox) { // confere se nao tem apenas 1 elemento
+            Celula pivo = partition(inicio, fim); // passa o começo e o final da lista
+            quickSort(inicio, pivo.prox != inicio ? pivo.prox : inicio);
+            quickSort(pivo.prox, fim);
+        }
+    }
+    
+    Celula partition(Celula inicio, Celula fim) {
+        int pivoValor = fim.elemento; // pivo vai começar no final
+        Celula i = inicio;
+    
+        for (Celula j = inicio; j != fim; j = j.prox) { // percorre ate chegar na posicao anterior ao pivo
+            if (j.elemento <= pivoValor) {
+                int temp = i.elemento;
+                i.elemento = j.elemento;
+                j.elemento = temp;
+                i = i.prox;
+            }
+        }
+    
+        // Troca o valor do pivô para a posição correta
+        int temp = i.elemento;
+        i.elemento = fim.elemento;
+        fim.elemento = temp;
+    
+        return i; 
+    }
+    
+    void quickSort() {
+        if (primeiro != ultimo) { // se nao estiver vazia, começa o metodo
+            quickSort(primeiro.prox, ultimo);
+        }
     }
 }
