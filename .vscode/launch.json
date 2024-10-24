@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "prova",
+      "request": "launch",
+      "mainClass": "estruturasFlexiveis.exercicios.prova",
+      "projectName": "AEDS2_af65bf31"
+    },
+    {
+      "type": "java",
       "name": "MatrizFlexivel",
       "request": "launch",
       "mainClass": "estruturasFlexiveis.exercicios.MatrizFlexivel",
