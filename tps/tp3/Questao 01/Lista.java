@@ -202,7 +202,7 @@ class Pokemon {
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(csvFile));
-            br.readLine(); 
+            br.readLine();
 
             while ((linha = br.readLine()) != null) {
                 if (linha.equals("FIM")) {
@@ -251,51 +251,124 @@ class Pokemon {
 public class Lista {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
+        ListaFlex lista = new ListaFlex();
+        ArrayList<Pokemon> removidos = new ArrayList<>();
         
         ArrayList<Pokemon> pokemons = pokemonManager.Ler();
 
+        
+
         if (pokemons.isEmpty()) {
             System.out.println("Nenhum Pokémon encontrado.");
-        } else {
-            searchPokemonId(pokemons);
+            return;
         }
-
         Scanner sc = new Scanner(System.in);
-        int tam = sc.nextInt();
-        String input =" ";
-        while(!(input = sc.nextLine()).equals("FIM")) {
 
-        }
-        
-    }
-
-    // aqui está lendo a entrada e achando o pokemon
-    public static void searchPokemonId(ArrayList<Pokemon> pokemons) {
-        Scanner sc = new Scanner(System.in);
-        String resp;
-        while (!(resp = sc.nextLine()).equals("FIM")) {
-            int id = Integer.parseInt(resp);
-            for (Pokemon pokemon : pokemons) {
-                if (pokemon.getId() == id) {
-                    System.out.println(pokemon);
+        String input = " ";
+        while(!(input=sc.nextLine()).equals("FIM")) {
+            int num = Integer.parseInt(input);
+            for(Pokemon p : pokemons) {
+                if(num == p.getId()) {
+                    lista.inserirFim(p);
                 }
             }
         }
-        sc.close();
+        
+        int tam = sc.nextInt(); 
+        
+        for(int i = 0; i < tam; i++) {
+            String comando = sc.next();
+            int id, pos;
+            Pokemon pokemon;
+
+            switch (comando) {
+                case "II":
+                    if (sc.hasNextInt()) {
+                        id = sc.nextInt();
+                        pokemon = searchPokemonId(pokemons, id);
+                        if (pokemon != null) {
+                            lista.inserirInicio(pokemon);
+                        }
+                    }
+                    break;
+
+                case "IF":
+                    if (sc.hasNextInt()) {
+                        id = sc.nextInt();
+                        pokemon = searchPokemonId(pokemons, id);
+                        if (pokemon != null) {
+                            lista.inserirFim(pokemon);
+                        }
+                    }
+                    break;
+
+                case "I*":
+                    if (sc.hasNextInt()) {
+                        pos = sc.nextInt();
+                        if (sc.hasNextInt()) {
+                            id = sc.nextInt();
+                            pokemon = searchPokemonId(pokemons, id);
+                            if (pokemon != null) {
+                                lista.inserir(pokemon, pos);
+                            }
+                        }
+                    }
+                    break;
+
+                case "RI":
+                    Pokemon pokeRemovedInicio = lista.removerInicio();
+                    if (pokeRemovedInicio != null) {
+                        removidos.add(pokeRemovedInicio);
+                    }
+                    break;
+
+                case "RF":
+                    Pokemon pokeRemovedFim = lista.removerFim();
+                    if (pokeRemovedFim != null) {
+                        removidos.add(pokeRemovedFim);
+                    }
+                    break;
+
+                case "R*":
+                    if (sc.hasNextInt()) {
+                        pos = sc.nextInt();
+                        Pokemon pokeRemovedPos = lista.remover(pos);
+                        if (pokeRemovedPos != null) {
+                            removidos.add(pokeRemovedPos);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        for(Pokemon p : removidos) {
+            System.out.println("(R) " + p.getName());
+        }
+
+        lista.mostrar();
+    }
+
+    public static Pokemon searchPokemonId(ArrayList<Pokemon> pokemons, int id) {
+        for (Pokemon pokemon : pokemons) {
+            if (pokemon.getId() == id) {
+                return pokemon;
+            }
+        }
+        return null; 
     }
 }
 
 class Celula {
-    int elemento;
+    Pokemon pokemon;
     Celula prox;
 
-    Celula () {
-        this.elemento = 0;
+    Celula() {
+        this.pokemon = null;
         this.prox = null;
     }
 
-    Celula (int x) {
-        this.elemento = x;
+    Celula(Pokemon x) {
+        this.pokemon = x;
         this.prox = null;
     }
 }
@@ -304,16 +377,16 @@ class ListaFlex {
     Celula primeiro;
     Celula ultimo;
 
-    ListaFlex () {
+    ListaFlex() {
         primeiro = ultimo = new Celula();
     }
 
-    void inserirFim (int x) {
+    void inserirFim(Pokemon x) {
         ultimo.prox = new Celula(x);
         ultimo = ultimo.prox;
     }
 
-    void inserirInicio (int x) {
+    void inserirInicio(Pokemon x) {
         Celula temp = new Celula(x);
         temp.prox = primeiro.prox;
         primeiro.prox = temp;
@@ -323,31 +396,32 @@ class ListaFlex {
         temp = null;
     }
 
-    int removerFim () {
+    Pokemon removerFim() {
         if (primeiro == ultimo) {
             System.exit(0);
         }
         Celula i;
-        for(i=primeiro; i.prox != ultimo; i=i.prox);
-        int elemento = ultimo.elemento;
+        for (i = primeiro; i.prox != ultimo; i = i.prox)
+            ;
+        Pokemon pokemon = ultimo.pokemon;
         ultimo = i;
         i = ultimo.prox = null;
-        return elemento;
+        return pokemon;
     }
 
-    int removerInicio () { // Remove apenas logicamente e não fisicamente
+    Pokemon removerInicio() { 
         if (primeiro == ultimo) {
             System.exit(0);
         }
         Celula temp = primeiro;
         primeiro = primeiro.prox;
-        int elemento = primeiro.elemento;
+        Pokemon pokemon = primeiro.pokemon;
         temp.prox = null;
         temp = null;
-        return elemento;
+        return pokemon;
     }
 
-    void inserir (int x, int pos) {
+    void inserir(Pokemon x, int pos) {
         int tam = tamanho();
         if (pos < 0 || pos > tam) {
             System.exit(0);
@@ -357,7 +431,8 @@ class ListaFlex {
             inserirFim(x);
         } else {
             Celula i = primeiro;
-            for(int j=0; j<pos; j++, i=i.prox);
+            for (int j = 0; j < pos; j++, i = i.prox)
+                ;
             Celula temp = new Celula(x);
             temp.prox = i.prox;
             i.prox = temp;
@@ -365,37 +440,40 @@ class ListaFlex {
         }
     }
 
-    int remover (int pos) {
-        int elemento=-1, tam = tamanho();
-        if(primeiro == ultimo || pos < 0 || pos >= tam) {
+    Pokemon remover(int pos) {
+        Pokemon pokemon = null;
+        int tam = tamanho();
+        if (primeiro == ultimo || pos < 0 || pos >= tam) {
             System.exit(0);
         } else if (pos == 0) {
-            elemento = removerInicio();
-        } else if (pos == tam-1) {
-            elemento = removerFim();
+            pokemon = removerInicio();
+        } else if (pos == tam - 1) {
+            pokemon = removerFim();
         } else {
             Celula i = primeiro;
-            for(int j=0; j<pos; j++, i=i.prox);
+            for (int j = 0; j < pos; j++, i = i.prox)
+                ;
             Celula temp = i.prox;
-            elemento = temp.elemento;
+            pokemon = temp.pokemon;
             i.prox = temp.prox;
             temp.prox = null;
-            i = temp = null; 
+            i = temp = null;
         }
-        return elemento;
+        return pokemon;
     }
 
-    void mostrar () {
-        for(Celula i=primeiro.prox; i!=null; i=i.prox) {
-            System.out.print(i.elemento + " ");
+    void mostrar() {
+        int x = 0;
+        for (Celula i = primeiro.prox; i != null; i = i.prox) {
+            System.out.println("["+x+"] "+i.pokemon);
+            x++;
         }
-        System.out.println();
     }
 
-    int tamanho () {
+    int tamanho() {
         int tam = 0;
-        for(Celula i=primeiro; i!=ultimo; i=i.prox, tam++);
+        for (Celula i = primeiro; i != ultimo; i = i.prox, tam++)
+            ;
         return tam;
-    } 
+    }
 }
-
