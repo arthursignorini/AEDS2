@@ -1,7 +1,41 @@
 package estruturas;
 
 public class arvoreBinaria {
-    
+    public static void main(String[] args) {
+        Arvore arvore = new Arvore();
+    }
+}
+
+class Arvore {
+   public No raiz;
+
+   Arvore () {
+      raiz = null;
+   }
+
+   public boolean pesquisar (int elemento) {
+      return pesquisar(raiz, elemento);
+   }
+   public boolean pesquisar(No no, int elemento) {
+      if(no == null) {
+         return false;
+      }
+      if(elemento == no.elemento) {
+         return true;
+      } else if (elemento < no.elemento) {
+         return pesquisar(no.esq, elemento);
+      } else {
+         return pesquisar(no.dir,elemento);
+      }
+   }
+
+   public void inserir() {
+      raiz = inserir(raiz, elemento);
+   }
+
+   public No inserir (No no, int elemento) {
+      if()
+   }
 }
 
 class No {
