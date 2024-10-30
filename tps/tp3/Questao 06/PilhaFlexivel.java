@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -248,12 +249,18 @@ class Pokemon {
     }
 }
 
-public class Lista {
+public class PilhaFlexivel {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
         ListaFlex lista = new ListaFlex();
         ArrayList<Pokemon> removidos = new ArrayList<>();
         
+=======
+        Pilha pilha = new Pilha();
+        ArrayList<Pokemon> removidos = new ArrayList<>();
+
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
         ArrayList<Pokemon> pokemons = pokemonManager.Ler();
 
         
@@ -265,6 +272,7 @@ public class Lista {
         Scanner sc = new Scanner(System.in);
 
         String input = " ";
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
         while(!(input=sc.nextLine()).equals("FIM")) {
             int num = Integer.parseInt(input);
             for(Pokemon p : pokemons) {
@@ -283,15 +291,40 @@ public class Lista {
 
             switch (comando) {
                 case "II":
+=======
+        while (!(input = sc.nextLine()).equals("FIM")) {
+            int num = Integer.parseInt(input);
+            for (Pokemon p : pokemons) {
+                if (num == p.getId()) {
+                    pilha.inserirPilha(p);
+                }
+            }
+        }
+
+        int tam = sc.nextInt();
+
+        for (int i = 0; i < tam; i++) {
+            String comando = sc.next();
+            int id;
+            Pokemon pokemon;
+
+            switch (comando) {
+                case "I":
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
                     if (sc.hasNextInt()) {
                         id = sc.nextInt();
                         pokemon = searchPokemonId(pokemons, id);
                         if (pokemon != null) {
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
                             lista.inserirInicio(pokemon);
+=======
+                            pilha.inserirPilha(pokemon);
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
                         }
                     }
                     break;
 
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
                 case "IF":
                     if (sc.hasNextInt()) {
                         id = sc.nextInt();
@@ -336,16 +369,30 @@ public class Lista {
                         if (pokeRemovedPos != null) {
                             removidos.add(pokeRemovedPos);
                         }
+=======
+                case "R":
+                    if (sc.hasNextInt()) {
+                            Pokemon poke = pilha.removerPilha();
+                            removidos.add(poke);
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
                     }
                     break;
             }
         }
 
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
         for(Pokemon p : removidos) {
             System.out.println("(R) " + p.getName());
         }
 
         lista.mostrar();
+=======
+        for (Pokemon p : removidos) {
+            System.out.println("(R) " + p.getName());
+        }
+
+        pilha.mostrar();
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
     }
 
     public static Pokemon searchPokemonId(ArrayList<Pokemon> pokemons, int id) {
@@ -354,11 +401,16 @@ public class Lista {
                 return pokemon;
             }
         }
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
         return null; 
+=======
+        return null;
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
     }
 }
 
 class Celula {
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
     Pokemon pokemon;
     Celula prox;
 
@@ -369,14 +421,25 @@ class Celula {
 
     Celula(Pokemon x) {
         this.pokemon = x;
+=======
+    public Pokemon elemento;
+    public Celula prox;
+
+    public Celula() {
+        this(null);
+    }
+
+    public Celula(Pokemon x) {
+        this.elemento = x;
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
         this.prox = null;
     }
 }
 
-class ListaFlex {
-    Celula primeiro;
-    Celula ultimo;
+class Pilha {
+    public Celula topo;
 
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
     ListaFlex() {
         primeiro = ultimo = new Celula();
     }
@@ -392,10 +455,25 @@ class ListaFlex {
         primeiro.prox = temp;
         if (primeiro.prox == ultimo) {
             ultimo = temp;
-        }
-        temp = null;
+=======
+    public Pilha() {
+        topo = null;
     }
 
+    public void inserirPilha(Pokemon x) {
+        Celula tmp = new Celula(x);
+        tmp.prox = topo;
+        topo = tmp;
+        tmp = null;
+    }
+
+    public Pokemon removerPilha() {
+        if (topo == null) {
+            throw new NoSuchElementException("Erro ao remover: a pilha está vazia!");
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
+        }
+
+<<<<<<< HEAD:tps/tp3/Questao 01/Lista.java
     Pokemon removerFim() {
         if (primeiro == ultimo) {
             System.exit(0);
@@ -476,4 +554,19 @@ class ListaFlex {
             ;
         return tam;
     }
+=======
+        Pokemon elemento = topo.elemento;
+        topo = topo.prox;
+       
+        return elemento;
+    }
+
+    void mostrar() {
+        int x = 0;
+        for (Celula i = topo; i != null; i = i.prox) {
+            System.out.println("[" + x + "] " + i.elemento);
+            x++;
+        }
+    }
+>>>>>>> 66b94d4496f6537747373bd501071d3b73ae3750:tps/tp3/Questao 06/PilhaFlexivel.java
 }
