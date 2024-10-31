@@ -1,4 +1,4 @@
-package estruturasFlexiveis.lista;
+package estruturas.estruturasFlexiveis.lista;
 
 public class listaFlexivel {
     public static void main(String[] args) {
@@ -11,6 +11,9 @@ public class listaFlexivel {
         lista.inserirFim(20);
         lista.inserirInicio(5);
         lista.inserirFim(30);
+        lista.mostrar();
+        System.out.println("EXERCICIO BERNARDO");
+        lista.berd();
         lista.mostrar();
 
         // Mostrar o tamanho atual da lista
@@ -151,5 +154,18 @@ class Lista {
         int tam = 0;
         for(Celula i=primeiro; i!=ultimo; i=i.prox, tam++);
         return tam;
-    } 
+    }
+    
+    void berd() {
+        Celula temp = primeiro.prox;
+        
+        while(temp!=null) {
+            int novoElemento = temp.elemento / 2;
+            temp.elemento = novoElemento;
+            Celula nova = new Celula(novoElemento);
+            nova.prox = temp.prox;
+            temp.prox = nova;
+            temp = nova.prox;
+        }
+    }
 }

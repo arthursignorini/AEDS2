@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "listaFlexivel",
+      "request": "launch",
+      "mainClass": "estruturas.estruturasFlexiveis.lista.listaFlexivel",
+      "projectName": "AEDS2_af65bf31"
+    },
+    {
+      "type": "java",
       "name": "ControladorVoo",
       "request": "launch",
       "mainClass": "beecrowd.ControladorVoo",
