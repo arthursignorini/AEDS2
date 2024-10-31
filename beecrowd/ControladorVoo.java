@@ -12,6 +12,7 @@ public class ControladorVoo {
         ArrayList<String> norte = new ArrayList<>();
         ArrayList<String> leste = new ArrayList<>();
         
+
        String direcao = "";
 
         String input;
