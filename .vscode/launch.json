@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ControladorVoo",
+      "request": "launch",
+      "mainClass": "beecrowd.ControladorVoo",
+      "projectName": "AEDS2_619956aa"
+    },
+    {
+      "type": "java",
       "name": "prova",
       "request": "launch",
       "mainClass": "estruturasFlexiveis.exercicios.prova",
