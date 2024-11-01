@@ -13,14 +13,17 @@ typedef struct Fila {
 
 Fila*iniciarFila() {
     Fila *fila = malloc(sizeof(Fila));
-    fila -> primeiro = (Celula*)malloc(Celula);
+    fila -> primeiro = (Celula*)malloc(sizeof(Celula));
+    fila -> primeiro -> prox = NULL;
     fila -> ultimo = fila -> primeiro;
     return fila;
 }
 
-void inserirFila (Fila *fila) {
-    fila -> ultimo -> prox = (Celula*)malloc(Celula);
+void inserirFila (Fila *fila, int x) {
+    fila -> ultimo -> prox = (Celula*)malloc(sizeof(Celula));
+    fila -> ultimo -> prox -> elemento = x;
     fila -> ultimo = fila -> ultimo -> prox;
+    fila -> ultimo -> prox = NULL;
 }
 
 int removerFila(Fila *fila) {
@@ -28,10 +31,10 @@ int removerFila(Fila *fila) {
         printf("FILA VAIZA");
         exit(1);
     }
-    Celula *temp = primeiro -> prox;
+    Celula *temp = fila -> primeiro -> prox;
     int elemento = temp -> elemento;
     fila -> primeiro -> prox = temp -> prox;
-    if(ultimo == temp) {
+    if(fila -> ultimo == temp) {
         fila -> ultimo = fila -> primeiro;
     }
     free(temp);
@@ -40,8 +43,20 @@ int removerFila(Fila *fila) {
 
 }
 
+void mostrar (Fila *fila) {
+    printf("\n");
+    for(Celula *i= fila ->primeiro->prox; i!=NULL; i=i->prox) {
+        printf("%d ",i->elemento);
+    }
+}
+
 int main() {
     Fila *fila = iniciarFila();
-    inserirFila(fila);
+    inserirFila(fila, 10);
+    inserirFila(fila, 20);
+    inserirFila(fila, 30);
+    inserirFila(fila, 40);
+    mostrar(fila);
     removerFila(fila);
+    mostrar(fila);
 }
