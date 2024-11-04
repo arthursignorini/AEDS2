@@ -1,4 +1,4 @@
-package estruturasFlexiveis.exercicios;
+package estruturasFlexiveis.matriz;
 
 import java.util.Scanner;
 
