@@ -4,9 +4,21 @@ import java.util.Scanner;
 
 public class MatrizFlexivel {
     public static void main(String[] args) {
-        Matriz mat = new Matriz(4,5);
+        Matriz mat = new Matriz(3,3);
         mat.matrizElementos();
+        System.out.println("\n\n");
         mat.printarMatriz();
+        System.out.println("\n\n");
+        mat.diagonalPrincipal();
+        System.out.println("\n\n");
+        mat.diagonalSecundaria();
+        System.out.println("\n\n");
+        Matriz m2 = new Matriz(3,3);
+        m2.matrizElementos();
+        System.out.println("\n\n");
+        m2.printarMatriz();
+        System.out.println("\n\n");
+        mat.somarMatriz(m2);
     }
 }
 
@@ -107,5 +119,66 @@ class Matriz {
             System.out.println();
             atual = atual.inf;
         }
+    }
+
+    void diagonalPrincipal() {
+        Celula i=inicio;
+        Celula j=inicio;
+        while(i!=null) {
+            while (j!=null) {
+                if(i == j) {
+                    System.out.print(i.elemento + " ");
+                }
+                j = j.dir;
+            }
+            i=i.inf;
+            if(i!=null) {
+                i=i.dir;
+            }
+            j=i;
+        }
+    }
+
+    void diagonalSecundaria() {
+        Celula i=inicio;
+        while (i.dir !=null) {
+            i=i.dir;
+        }
+        while(i != null) {
+            System.out.print(i.elemento + " ");
+            i=i.inf;
+            if(i!=null) {
+                i=i.esq;
+            }
+        }
+        
+    }
+
+    void somarMatriz(Matriz m2) {
+        Matriz m3 = new Matriz(3,3);
+        Celula i1 = inicio;
+        Celula i2 = m2.inicio;
+        Celula i3 = m3.inicio;
+        
+        Celula j1 = inicio;
+        Celula j2 = m2.inicio;
+        Celula j3 = m3.inicio;
+        
+        while(i1 != null) {
+            while (j1!=null) {
+                j3.elemento = j1.elemento + j2.elemento;
+                j1=j1.dir;
+                j2=j2.dir;
+                j3=j3.dir;
+            }
+            i1 = i1.inf;
+            i2 = i2.inf;
+            i3 = i3.inf;
+
+            j1 = i1;
+            j2 = i2;
+            j3 = i3;
+        }
+        m3.printarMatriz();
     }
 }
