@@ -3,6 +3,7 @@
   "configurations": [
     {
       "type": "java",
+<<<<<<< Updated upstream
       "name": "listaFlexivel",
       "request": "launch",
       "mainClass": "estruturas.estruturasFlexiveis.lista.listaFlexivel",
@@ -13,6 +14,11 @@
       "name": "ControladorVoo",
       "request": "launch",
       "mainClass": "beecrowd.ControladorVoo",
+=======
+      "name": "arvoreBinaria",
+      "request": "launch",
+      "mainClass": "estruturas.arvoreBinaria",
+>>>>>>> Stashed changes
       "projectName": "AEDS2_619956aa"
     },
     {
