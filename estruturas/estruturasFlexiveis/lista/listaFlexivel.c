@@ -4,6 +4,7 @@
 typedef struct Celula {
     int elemento;
     struct Celula *prox;
+    struct Celula *ant;
 } Celula ;
 
 typedef struct Lista
