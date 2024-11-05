@@ -1,4 +1,4 @@
-package beecrowd;
+package beecrowd.p2;
 
 import java.util.ArrayList;
 import java.util.Scanner;
