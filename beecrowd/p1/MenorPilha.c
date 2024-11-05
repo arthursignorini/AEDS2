@@ -19,9 +19,9 @@ int main()
                 }
             }
             printf("%d\n",min);
-        } else if(strcmp(opcao, "POP")==0) { // retirar do final
+        } else if(strcmp(opcao, "POP")==0) { 
             n--;
-        } else if(strcmp(opcao, "PUSH")==0) { // colocar no final
+        } else if(strcmp(opcao, "PUSH")==0) { 
             int valor;
             scanf("%d",&valor);
             vet[n] = valor;
