@@ -1,5 +1,11 @@
 #include <stdio.h>
 
+void swap(int a, int b, int vet[]) {
+    int temp = vet[a];
+    vet[a] = vet[b];
+    vet[b] = temp;
+}
+
 int main() {
     int qntd;
     scanf("%d", &qntd);
@@ -11,20 +17,19 @@ int main() {
             scanf("%d", &vet[j]);
         }
         int cont = 0;
-        for (int x = 1; x < tam; x++) {
-            int temp = vet[x];
-            int y = x - 1;
-            int moved = 0;
-
-            // Inserção de `temp` no local correto
-            while (y >= 0 && vet[y] > temp) {
-                vet[y + 1] = vet[y];
-                y--;
+        for (int i = 0; i < tam - 1; i++) {
+            int menor = i;
+            for (int j = i + 1; j < tam; j++) {
+                if (vet[menor] > vet[j]) {
+                    menor = j;
+                }
             }
-            vet[y + 1] = temp;
-            cont++; // Incrementa `cont` quando `temp` é colocado em sua posição final
+            if (menor != i) { 
+                swap(menor, i, vet);
+                cont++;
+            }
         }
-        printf("%d\n", cont); // Exibe o número de inserções
+        printf("%d\n", cont); 
     }
     return 0;
 }
