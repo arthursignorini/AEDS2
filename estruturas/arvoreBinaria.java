@@ -35,7 +35,7 @@ class Arvore {
          return pesquisar(no.dir,elemento);
       }
    }
-
+   
    // INSERIR
    public void inserir(int elemento) {
       raiz = inserir(raiz, elemento);

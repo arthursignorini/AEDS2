@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "arvoreBinaria",
+      "request": "launch",
+      "mainClass": "estruturas.arvoreBinaria",
+      "projectName": "AEDS2_619956aa"
+    },
+    {
+      "type": "java",
       "name": "teste",
       "request": "launch",
       "mainClass": "teste",
