@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/1511453/Documents/GitHub/AEDS2/beecrowd/p2",
-      "program": "c:/Users/1511453/Documents/GitHub/AEDS2/beecrowd/p2/build/Debug/outDebug",
+      "cwd": "c:/Users/1511453/Documents/GitHub/AEDS2",
+      "program": "c:/Users/1511453/Documents/GitHub/AEDS2/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
