@@ -1,10 +1,8 @@
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 class Pokemon {
@@ -272,6 +270,7 @@ public class QuickSort_ListaDupla {
                 }
             }
         }
+        lista.ordenar();
         lista.mostrar();
     }
 
@@ -411,46 +410,38 @@ class ListaFlex {
     }
 
     void ordenar() {
-        if (primeiro.prox == null) {
-            return; 
-        }
+        quickSort(primeiro.prox, ultimo);
+    }
 
-        Celula atual = primeiro.prox; 
-        Celula proximo;
-
-        while (atual != null) {
-            proximo = atual.prox;
-            inserirOrdenado(atual);
-            atual = proximo; 
+    private void quickSort(Celula low, Celula high) {
+        if (high != null && low != high && low != high.prox) {
+            Celula pivo = partition(low, high);
+            quickSort(low, pivo.ant);
+            quickSort(pivo.prox, high);
         }
     }
 
-    private void inserirOrdenado(Celula novaCelula) {
-        Celula atual = primeiro.prox;
+    private Celula partition(Celula low, Celula high) {
+        Pokemon pivo = high.pokemon;
+        Celula i = low.ant; // Inicializa a posição de menor elemento
 
-        while (atual != null && (atual.pokemon.getGeneration() < novaCelula.pokemon.getGeneration() ||
-               (atual.pokemon.getGeneration() == novaCelula.pokemon.getGeneration() &&
-                atual.pokemon.getName().compareTo(novaCelula.pokemon.getName()) < 0))) {
-            atual = atual.prox;
-        }
-
-        
-        if (atual == null) {
-            // Insere no final
-            ultimo.prox = novaCelula;
-            novaCelula.ant = ultimo;
-            ultimo = novaCelula;
-        } else {
-            // Insere antes do atual
-            novaCelula.prox = atual;
-            novaCelula.ant = atual.ant;
-
-            if (atual.ant != null) {
-                atual.ant.prox = novaCelula;
-            } else {
-                primeiro.prox = novaCelula;
+        for (Celula j = low; j != high; j = j.prox) {
+            if (j.pokemon.getGeneration() < pivo.getGeneration() || 
+                (j.pokemon.getGeneration() == pivo.getGeneration() && 
+                j.pokemon.getName().compareTo(pivo.getName()) <= 0)) {
+                
+                i = (i == null) ? low : i.prox; // Incrementa i
+                swap(i, j);
             }
-            atual.ant = novaCelula;
         }
+        i = (i == null) ? low : i.prox; // Incrementa i
+        swap(i, high); // Coloca o pivô na posição correta
+        return i;
+    }
+
+    private void swap(Celula a, Celula b) {
+        Pokemon temp = a.pokemon;
+        a.pokemon = b.pokemon;
+        b.pokemon = temp;
     }
 }

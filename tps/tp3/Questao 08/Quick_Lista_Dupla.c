@@ -91,14 +91,15 @@ void inserirInicio(Lista *lista, Pokemon x) {
 
 // Função auxiliar para trocar elementos entre duas células
 void trocar(Celula *a, Celula *b) {
-    Pokemon *temp = a->elemento;
+    Pokemon temp = a->elemento;
     a->elemento = b->elemento;
     b->elemento = temp;
+
 }
 
 // Função de particionamento para QuickSort
 Celula* partition(Celula *inicio, Celula *fim) {
-    int pivot = fim->elemento->generation;
+    int pivot = fim->elemento.generation;
     Celula *i = inicio->ant;
 
     for (Celula *j = inicio; j != fim; j = j->prox) {
