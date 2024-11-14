@@ -58,7 +58,7 @@ void removeQuotes(char* str);
 char* capitalizeFirstLetter(char* str);
 void printPokemon(Pokemon pokemon, int index);
 char* parseCsvField(char** cursor);
-Pokemon removerFila(Fila *fila);
+Pokemon removerFila(Lista *Lista);
 
 
 // Função para inicializar a lista duplamente encadeada
@@ -99,11 +99,13 @@ void trocar(Celula *a, Celula *b) {
 
 // Função de particionamento para QuickSort
 Celula* partition(Celula *inicio, Celula *fim) {
-    int pivot = fim->elemento.generation;
+    int pivotGeneration = fim->elemento.generation;
+    char *pivotName = fim->elemento.name;  
     Celula *i = inicio->ant;
 
     for (Celula *j = inicio; j != fim; j = j->prox) {
-        if (j->elemento->generation <= pivot) {
+        if (j->elemento.generation < pivotGeneration || 
+            (j->elemento.generation == pivotGeneration && strcmp(j->elemento.name, pivotName) < 0)) {
             i = (i == NULL) ? inicio : i->prox;
             trocar(i, j);
         }
@@ -113,6 +115,7 @@ Celula* partition(Celula *inicio, Celula *fim) {
     trocar(i, fim);
     return i;
 }
+
 
 // Função QuickSort adaptada para lista duplamente encadeada
 void quickSortPokemon(Celula *inicio, Celula *fim) {
@@ -302,10 +305,9 @@ char* capitalizeFirstLetter(char* str) {
     return result;
 }
 
-void printFila(Fila *fila) {
+void printLista(Lista *lista) {
     int index = 0;  
-
-    for (Celula *i = fila->primeiro->prox; i != NULL; i = i->prox) {
+    for (Celula *i = lista->primeiro->prox; i != NULL; i = i->prox) {
         printPokemon(i->elemento, index++); 
     }
 }
@@ -328,7 +330,7 @@ int main() {
 
     quickSortPokemon(lista->primeiro->prox, lista->ultimo);
     // Print final fila
-    printFila(lista);
+    printLista(lista);
     
     return 0;
 }
