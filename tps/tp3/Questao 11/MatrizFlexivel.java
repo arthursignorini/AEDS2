@@ -157,8 +157,12 @@ class Matriz {
                 atualOutra = atualOutra.dir;
             }
             atualResultado = atualResultado.inf;
-            atual = atual.inf;
-            atualOutra = atualOutra.inf;
+            if(atual != null) {
+                atual = atual.inf;
+            }
+            if(atualOutra != null) {
+                atualOutra = atualOutra.inf;
+            }
         }
 
         return resultado;
@@ -196,7 +200,10 @@ class Matriz {
         Celula atual = inicio;
         for (int i = 0; i < Math.min(linha, coluna); i++) {
             System.out.print(atual.elemento + " ");
-            atual = atual.dir.inf; // Mover para a próxima célula da diagonal principal
+            atual = atual.dir;
+            if(atual != null) {
+                atual = atual.inf;
+            } // Mover para a próxima célula da diagonal principal
         }
         System.out.println();
     }
