@@ -197,7 +197,7 @@ class Pokemon {
     // leitura do csv
     public ArrayList<Pokemon> Ler() {
         ArrayList<Pokemon> pokemons = new ArrayList<>();
-        String csvFile = "pokemon.csv";
+        String csvFile = "/tmp/pokemon.csv";
         String linha;
 
         try {
@@ -249,14 +249,14 @@ class Pokemon {
 }
 
 class No {
-    public int captureRate; // Valor usado como chave (mod 15)
+    public int captureRate; 
     public No esq, dir;
-    public No2 outraArvore; // Ponteiro direto para um nó da segunda árvore
+    public No2 outraArvore; 
 
     public No(int captureRate) {
         this.captureRate = captureRate;
         this.esq = this.dir = null;
-        this.outraArvore = null; // Inicializado sem uma subárvore associada
+        this.outraArvore = null; 
     }
 }
 
@@ -315,7 +315,7 @@ class Arvore {
         return false;
     }
 
-    // PESQUISA NA PRIMEIRA ÁRVORE (COM CAMINHO)
+    
     private No pesquisarPrimeiraArvoreComCaminho(No no, int captureRate, StringBuilder caminho) {
         if (no == null) {
             return null;
@@ -332,7 +332,7 @@ class Arvore {
         }
     }
 
-    // PESQUISA NA SEGUNDA ÁRVORE (COM CAMINHO)
+    
     private boolean pesquisarSegundaArvoreComCaminho(No2 no, String nome, StringBuilder caminho) {
         if (no == null) {
             return false;
@@ -387,6 +387,7 @@ public class Arvore_De_Arvore {
         while (!(input = sc.nextLine()).equals("FIM")) {
             Pokemon poke = searchPokemonId(pokemons,input);
             if(poke!=null) {
+                System.out.println(" =>" + input);
                 arvore.pesquisar(poke.getCaptureRate(), input);
             }
         }
