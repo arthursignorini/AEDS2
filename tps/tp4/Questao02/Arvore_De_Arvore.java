@@ -197,7 +197,7 @@ class Pokemon {
     // leitura do csv
     public ArrayList<Pokemon> Ler() {
         ArrayList<Pokemon> pokemons = new ArrayList<>();
-        String csvFile = "/tmp/pokemon.csv";
+        String csvFile = "pokemon.csv";
         String linha;
 
         try {
@@ -248,63 +248,114 @@ class Pokemon {
     }
 }
 
+class No {
+    public int captureRate; // Valor usado como chave (mod 15)
+    public No esq, dir;
+    public No2 outraArvore; // Ponteiro direto para um nó da segunda árvore
 
-class Arvore {
-    public No raiz;
- 
-    Arvore () {
-       raiz = null;
-    }
- 
-    // PESQUISAR
-    public boolean pesquisar(String elemento) {
-        StringBuilder caminho = new StringBuilder(); 
-        boolean encontrado = pesquisar(raiz, elemento, caminho);
-        System.out.println("=>raiz" + caminho.toString() + (encontrado ? " SIM" : " NAO"));
-        return encontrado;
-    }
-
-    private boolean pesquisar(No no, String elemento, StringBuilder caminho) {
-        if (no == null) {
-            return false;
-        }
-        int comparacao = elemento.compareTo(no.elemento);
-        if (comparacao == 0) {
-            return true;
-        } else if (comparacao < 0) {
-            caminho.append(" esq"); 
-            return pesquisar(no.esq, elemento, caminho);
-        } else {
-            caminho.append(" dir"); 
-            return pesquisar(no.dir, elemento, caminho);
-        }
-    }
-
-
-    // INSERIR
-    public void inserir(String elemento) {
-        raiz = inserir(raiz, elemento);
-    }
-
-    private No inserir(No no, String elemento) {
-        if (no == null) {
-            return new No(elemento);
-        }
-        int comparacao = elemento.compareTo(no.elemento);
-        if (comparacao < 0) {
-            no.esq = inserir(no.esq, elemento);
-        } else if (comparacao > 0) {
-            no.dir = inserir(no.dir, elemento);
-        }
-        return no;
+    public No(int captureRate) {
+        this.captureRate = captureRate;
+        this.esq = this.dir = null;
+        this.outraArvore = null; // Inicializado sem uma subárvore associada
     }
 }
 
-class No {
-    public String elemento;
-    public No esq, dir;
+class Arvore {
+    public No raiz;
 
-    public No(String elemento) {
+    public Arvore() {
+        raiz = null;
+    }
+
+    public void inserir(int captureRate, String nome) {
+        raiz = inserir(raiz, captureRate, nome);
+    }
+
+    private No inserir(No no, int captureRate, String nome) {
+        int chave = captureRate % 15;
+        if (no == null) {
+            No novo = new No(chave);
+            novo.outraArvore = new No2(nome);
+            return novo;
+        }
+
+        if (chave < no.captureRate) {
+            no.esq = inserir(no.esq, captureRate, nome);
+        } else if (chave > no.captureRate) {
+            no.dir = inserir(no.dir, captureRate, nome);
+        } else {
+            no.outraArvore = inserirNo2(no.outraArvore, nome);
+        }
+        return no;
+    }
+
+    private No2 inserirNo2(No2 no, String nome) {
+        if (no == null) {
+            return new No2(nome);
+        }
+        int comparacao = nome.compareTo(no.elemento);
+        if (comparacao < 0) {
+            no.esq = inserirNo2(no.esq, nome);
+        } else if (comparacao > 0) {
+            no.dir = inserirNo2(no.dir, nome);
+        }
+        return no;
+    }
+
+    // PESQUISAR COM PRINT FORMATADO
+    public boolean pesquisar(int captureRate, String nome) {
+        StringBuilder caminhoCompleto = new StringBuilder();
+        No no = pesquisarPrimeiraArvoreComCaminho(raiz, captureRate % 15, caminhoCompleto);
+
+        if (no != null) {
+            caminhoCompleto.append(" => Segunda árvore: ");
+            boolean encontrado = pesquisarSegundaArvoreComCaminho(no.outraArvore, nome, caminhoCompleto);
+            return encontrado;
+        }
+        return false;
+    }
+
+    // PESQUISA NA PRIMEIRA ÁRVORE (COM CAMINHO)
+    private No pesquisarPrimeiraArvoreComCaminho(No no, int captureRate, StringBuilder caminho) {
+        if (no == null) {
+            return null;
+        }
+        caminho.append("raiz ");
+        if (captureRate == no.captureRate) {
+            return no;
+        } else if (captureRate < no.captureRate) {
+            caminho.append("ESQ ");
+            return pesquisarPrimeiraArvoreComCaminho(no.esq, captureRate, caminho);
+        } else {
+            caminho.append("DIR ");
+            return pesquisarPrimeiraArvoreComCaminho(no.dir, captureRate, caminho);
+        }
+    }
+
+    // PESQUISA NA SEGUNDA ÁRVORE (COM CAMINHO)
+    private boolean pesquisarSegundaArvoreComCaminho(No2 no, String nome, StringBuilder caminho) {
+        if (no == null) {
+            return false;
+        }
+        int comparacao = nome.compareTo(no.elemento);
+        if (comparacao == 0) {
+            return true;
+        } else if (comparacao < 0) {
+            caminho.append("esq ");
+            return pesquisarSegundaArvoreComCaminho(no.esq, nome, caminho);
+        } else {
+            caminho.append("dir ");
+            return pesquisarSegundaArvoreComCaminho(no.dir, nome, caminho);
+        }
+    }
+
+}
+
+class No2 {
+    public String elemento;
+    public No2 esq, dir;
+
+    public No2(String elemento) {
         this.elemento = elemento;
         this.esq = this.dir = null;
     }
@@ -324,18 +375,28 @@ public class Arvore_De_Arvore {
         Scanner sc = new Scanner(System.in);
 
         String input = " ";
-        while(!(input=sc.nextLine()).equals("FIM")) {
+        while (!(input = sc.nextLine()).equals("FIM")) {
             int num = Integer.parseInt(input);
-            for(Pokemon p : pokemons) {
-                if(num == p.getId()) {
-                    arvore.inserir(p.getName());
+            for (Pokemon p : pokemons) {
+                if (num == p.getId()) {
+                    arvore.inserir(p.getCaptureRate(), p.getName());
                 }
             }
         }
 
-        while(!(input=sc.nextLine()).equals("FIM")) {
-            System.out.println(input);
-            arvore.pesquisar(input);
+        while (!(input = sc.nextLine()).equals("FIM")) {
+            Pokemon poke = searchPokemonId(pokemons,input);
+            if(poke!=null) {
+                arvore.pesquisar(poke.getCaptureRate(), input);
+            }
         }
+    }
+    public static Pokemon searchPokemonId(ArrayList<Pokemon> pokemons, String nome) {
+        for (Pokemon pokemon : pokemons) {
+            if (pokemon.getName().equals(nome)) {
+                return pokemon;
+            }
+        }
+        return null; 
     }
 }

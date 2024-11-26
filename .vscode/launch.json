@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Arvore_De_Arvore",
+      "request": "launch",
+      "mainClass": "Arvore_De_Arvore",
+      "projectName": "AEDS2_a3c0e8f0"
+    },
+    {
+      "type": "java",
       "name": "arvoreBinaria",
       "request": "launch",
       "mainClass": "estruturas.arvoreBinaria",
