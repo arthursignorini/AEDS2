@@ -310,7 +310,7 @@ class No {
     }
 }
 
-public class ArvoreBinaria {
+public class Arvore_De_Arvore {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
         Arvore arvore = new Arvore();

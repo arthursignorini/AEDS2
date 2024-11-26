@@ -249,16 +249,29 @@ class Pokemon {
 }
 
 
+class No {
+    public String elemento;
+    public No esq, dir;
+    public int altura;
+
+    No(String elemento) {
+        this.elemento = elemento;
+        this.esq = null;
+        this.dir = null;
+        this.altura = 1; // Altura inicial é 1 (contando com o próprio nó)
+    }
+}
+
 class Arvore {
     public No raiz;
- 
-    Arvore () {
-       raiz = null;
+
+    Arvore() {
+        raiz = null;
     }
- 
+
     // PESQUISAR
     public boolean pesquisar(String elemento) {
-        StringBuilder caminho = new StringBuilder(); 
+        StringBuilder caminho = new StringBuilder();
         boolean encontrado = pesquisar(raiz, elemento, caminho);
         System.out.println("=>raiz" + caminho.toString() + (encontrado ? " SIM" : " NAO"));
         return encontrado;
@@ -272,14 +285,13 @@ class Arvore {
         if (comparacao == 0) {
             return true;
         } else if (comparacao < 0) {
-            caminho.append(" esq"); 
+            caminho.append(" esq");
             return pesquisar(no.esq, elemento, caminho);
         } else {
-            caminho.append(" dir"); 
+            caminho.append(" dir");
             return pesquisar(no.dir, elemento, caminho);
         }
     }
-
 
     // INSERIR
     public void inserir(String elemento) {
@@ -290,27 +302,81 @@ class Arvore {
         if (no == null) {
             return new No(elemento);
         }
+
         int comparacao = elemento.compareTo(no.elemento);
         if (comparacao < 0) {
             no.esq = inserir(no.esq, elemento);
         } else if (comparacao > 0) {
             no.dir = inserir(no.dir, elemento);
         }
+
+        no.altura = 1 + Math.max(altura(no.esq), altura(no.dir));
+
+        int balanceamento = getFatorBalanceamento(no);
+
+        // Rotação à direita
+        if (balanceamento > 1 && elemento.compareTo(no.esq.elemento) < 0) {
+            return rotDir(no);
+        }
+
+        // Rotação à esquerda
+        if (balanceamento < -1 && elemento.compareTo(no.dir.elemento) > 0) {
+            return rotEsq(no);
+        }
+
+        // Rotação dupla (esquerda-direita)
+        if (balanceamento > 1 && elemento.compareTo(no.esq.elemento) > 0) {
+            no.esq = rotEsq(no.esq);
+            return rotDir(no);
+        }
+
+        // Rotação dupla (direita-esquerda)
+        if (balanceamento < -1 && elemento.compareTo(no.dir.elemento) < 0) {
+            no.dir = rotDir(no.dir);
+            return rotEsq(no);
+        }
+
         return no;
     }
-}
 
-class No {
-    public String elemento;
-    public No esq, dir;
+    // MÉTODOS DE ROTAÇÃO
 
-    public No(String elemento) {
-        this.elemento = elemento;
-        this.esq = this.dir = null;
+    private No rotDir(No y) {
+        No x = y.esq;
+        No T2 = x.dir;
+
+        x.dir = y;
+        y.esq = T2;
+
+        y.altura = 1 + Math.max(altura(y.esq), altura(y.dir));
+        x.altura = 1 + Math.max(altura(x.esq), altura(x.dir));
+
+        return x; 
+    }
+
+    private No rotEsq(No x) {
+        No y = x.dir;
+        No T2 = y.esq;
+
+        y.esq = x;
+        x.dir = T2;
+
+        x.altura = 1 + Math.max(altura(x.esq), altura(x.dir));
+        y.altura = 1 + Math.max(altura(y.esq), altura(y.dir));
+
+        return y; 
+    }
+
+    private int altura(No no) {
+        return (no == null) ? 0 : no.altura;
+    }
+
+    private int getFatorBalanceamento(No no) {
+        return (no == null) ? 0 : altura(no.esq) - altura(no.dir);
     }
 }
 
-public class ArvoreBinaria {
+public class AVL {
     public static void main(String[] args) {
         Pokemon pokemonManager = new Pokemon();
         Arvore arvore = new Arvore();
