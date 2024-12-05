@@ -248,7 +248,6 @@ class Pokemon {
     }
 }
 
-
 class HashTable {
     private static final int MAIN_AREA_SIZE = 21; // Tamanho da área principal
     private static final int RESERVE_AREA_SIZE = 9; // Tamanho da área de reserva
@@ -293,23 +292,25 @@ class HashTable {
 
     // Buscar um nome na tabela
     public boolean search(String name) {
-        int index = hash(name); 
+        int index = hash(name);
 
         // Verifica a área principal
         if (table[index] != null && table[index].equals(name)) {
-            System.out.print("=> " + name + ": (Posicao:"+ index + ") SIM");
+            System.out.print("=> " + name + ": (Posicao:");
+            System.out.println(index + ") SIM");
             return true;
         }
 
         // Verifica a área de reserva
         for (int i = MAIN_AREA_SIZE; i < reserveIndex; i++) {
             if (table[i] != null && table[i].equals(name)) {
-                System.out.println("=> " + name + ": (Posicao:"+ i + ") SIM");
+                System.out.print("=> " + name + ": (Posicao:");
+                System.out.println(index + ") SIM");
                 return true;
             }
         }
         System.out.println("=> " + name + ": NAO");
-        return false; 
+        return false;
     }
 }
 
@@ -327,16 +328,16 @@ public class HashReserva {
         Scanner sc = new Scanner(System.in);
 
         String input = " ";
-        while(!(input=sc.nextLine()).equals("FIM")) {
+        while (!(input = sc.nextLine()).equals("FIM")) {
             int num = Integer.parseInt(input);
-            for(Pokemon p : pokemons) {
-                if(num == p.getId()) {
+            for (Pokemon p : pokemons) {
+                if (num == p.getId()) {
                     hash.insert(p.getName());
                 }
             }
         }
 
-        while(!(input=sc.nextLine()).equals("FIM")) {
+        while (!(input = sc.nextLine()).equals("FIM")) {
             hash.search(input);
         }
     }
