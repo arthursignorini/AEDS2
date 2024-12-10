@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Protocolo_TCP_IP",
+      "request": "launch",
+      "mainClass": "Protocolo_TCP_IP",
+      "projectName": "AEDS2_a3c0e8f0"
+    },
+    {
+      "type": "java",
       "name": "Arvore_De_Arvore",
       "request": "launch",
       "mainClass": "Arvore_De_Arvore",
