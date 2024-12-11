@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TDA_Racional",
+      "request": "launch",
+      "mainClass": "TDA_Racional",
+      "projectName": "AEDS2_619956aa"
+    },
+    {
+      "type": "java",
       "name": "Noiva_do_Trevo",
       "request": "launch",
       "mainClass": "Noiva_do_Trevo",
@@ -43,8 +50,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/1511453/Documents/GitHub/AEDS2/estruturas/estruturasFlexiveis/lista",
-      "program": "c:/Users/1511453/Documents/GitHub/AEDS2/estruturas/estruturasFlexiveis/lista/build/Debug/outDebug",
+      "cwd": "c:/Users/1511453/Documents/GitHub/AEDS2/beecrowd/p3",
+      "program": "c:/Users/1511453/Documents/GitHub/AEDS2/beecrowd/p3/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
