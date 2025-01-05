@@ -12,4 +12,4 @@
 | Desempenho| 15,0    |
 | TPs       | 20,0    |
 
-Totalizando 93,0 
+📊 Totalizando 93,0 
